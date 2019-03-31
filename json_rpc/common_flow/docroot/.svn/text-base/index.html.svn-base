@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ConfD</title>
+    <script data-main="confd/index" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.16/require.js"></script>
+</head>
+</html>

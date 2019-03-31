@@ -1,0 +1,17 @@
+{
+	"name": "HTML2CANVAS",
+	"version":"0.4.1.0",
+	"directories": {
+		"lib": "."
+	},
+	"main": "",
+	"description": "This is an open source utility for converting HTML into canvas draws for screen capture.",
+	"licenses": [
+		 {
+				 "type": "MIT"
+		 }
+	],
+	"bugs": "https://github.com/niklasvh/html2canvas/issues",
+	"keywords": ["XCT", "WAP", "XWT", "JavaScript", "Dojo", "Toolkit"],
+	"dojoBuild":"html2canvas.profile.js" 
+}

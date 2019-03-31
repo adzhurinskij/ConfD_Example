@@ -1,0 +1,4 @@
+//>>built
+define("gridx/modules/filter/QuickFilter","dojo/_base/declare dojo/dom-class dojox/gesture/tap ../../core/_Module ../../support/QuickFilter ../Puller ../Bar".split(" "),function(d,g,h,e,f){return d(e,{name:"quickFilter",required:["bar","filter","puller"],autoApply:!0,delay:700,preload:function(){var a=this.grid,b=a.bar,c={bar:"top",row:0,col:3,pluginClass:f,className:"gridxBarQuickFilter",hookPoint:this,hookName:"quickFilter",autoApply:this.arg("autoApply"),delay:this.arg("delay"),textBoxClass:this.arg("textBoxClass",
+"dijit.form.TextBox"),buttonClass:this.arg("buttonClass","dijit.form.Button"),comboButtonClass:this.arg("comboButtonClass","dijit.form.ComboButton"),menuClass:this.arg("menuClass","dijit.Menu"),menuItemClass:this.arg("menuItemClass","dijit.MenuItem")};a.touch&&(c.bar="quickFilter",c.priority=0.5,b.loaded.then(function(){a.puller.bind(b.quickFilterNode)}));b.defs.push(c)}})});
+//# sourceMappingURL=QuickFilter.js.map

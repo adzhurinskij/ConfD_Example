@@ -1,0 +1,89 @@
+module config {
+  namespace "http://tail-f.com/ns/example/config";
+  prefix config;
+
+  import tailf-common {
+    prefix tailf;
+  }
+
+  container config {
+    container system {
+      leaf sysName {
+        type string;
+        default tst;
+      }
+      tailf:action reboot {
+        tailf:actionpoint "act-reboot";
+        input {
+        }
+        output {
+        }
+      }
+      tailf:action restart {
+        tailf:actionpoint "act-restart";
+        input {
+          leaf mode {
+            type string;
+            mandatory true;
+          }
+          leaf debug {
+            type empty;
+          }
+          container foo {
+            presence "";
+            leaf debug {
+              type empty;
+            }
+            leaf trace {
+              type string;
+            }
+          }
+        }
+        output {
+          leaf time {
+            type string;
+            mandatory true;
+          }
+        }
+      }
+/* not yet implemented
+      tailf:action abort-test {
+        tailf:actionpoint "act-abort-test";
+        input {
+          leaf mode {
+            type string;
+            mandatory true;
+          }
+        }
+        output {
+        }
+      }
+*/
+    }
+
+    list server {
+      key name;
+      max-elements 64;
+      leaf name {
+        tailf:cli-allow-range;
+        type string;
+      }
+      tailf:action reset {
+        tailf:actionpoint "act-reset";
+        input {
+          leaf when {
+            type string;
+            mandatory true;
+          }
+        }
+        output {
+          leaf time {
+            type string;
+            mandatory true;
+          }
+        }
+      }
+    }
+
+  }
+}

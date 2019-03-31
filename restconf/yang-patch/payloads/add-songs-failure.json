@@ -1,0 +1,46 @@
+{
+  "ietf-yang-patch:yang-patch" : {
+    "patch-id": "add-songs-patch-failure",
+    "edit": [
+      {
+        "edit-id": "edit1",
+        "operation": "create",
+        "target": "/song=Bridge%20Burning",
+        "value": {
+          "example-jukebox:song": {
+            "name": "Bridge Burning",
+            "location": "/media/bridge_burning.mp3/media/bridge_burning.mp3",
+            "format": "MP3",
+            "length": 288
+          }
+        }
+      },
+      {
+        "edit-id": "edit2",
+        "operation": "create",
+        "target": "/song=Rope",
+        "value": {
+          "example-jukebox:song": {
+            "name": "Rope",
+            "location": "/media/rope.mp3",
+            "format": "MP3",
+            "length": 259
+          }
+        }
+      },
+      {
+        "edit-id": "edit3",
+        "operation": "create",
+        "target": "/song=Dear%20Rosemary",
+        "value": {
+          "example-jukebox:song": {
+            "name": "Dear Rosemary",
+            "location": "/media/dear_rosemary.mp3",
+            "format": "MP3",
+            "length": 269
+          }
+        }
+      }
+    ]
+  }
+}

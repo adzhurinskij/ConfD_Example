@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+    <title>ConfD</title>
+
+    <link rel="stylesheet" type="text/css" href="lib/dijit/themes/claro/document.css"/>
+	<link rel="stylesheet" type="text/css" href="lib/dijit/themes/claro/claro.css"/>
+	<link rel="stylesheet" type="text/css" href="lib/dijit/themes/tundra/tundra.css"/>
+	<link rel="stylesheet" type="text/css" href="lib/dijit/themes/nihilo/nihilo.css"/>
+	<link rel="stylesheet" type="text/css" href="lib/dijit/themes/soria/soria.css"/>
+
+    <link rel="stylesheet" type="text/css" href="lib/dojox/layout/resources/GridContainer.css">
+    <link rel="stylesheet" type="text/css" href="lib/dojox/layout/resources/FloatingPane.css">
+    <link rel="stylesheet" type="text/css" href="lib/dojox/layout/resources/ResizeHandle.css">
+
+    <link rel="stylesheet" type="text/css" href="lib/gridx/resources/claro/Gridx.css">
+
+    <link rel="stylesheet/less" type="text/css" href="index.less">
+
+    <!-- set options before less.js script -->
+    <script>
+      less = {
+        // 'production' disables error message in DOM
+        env: 'production' // 'development',
+      };
+    </script>
+    <script src="lib/less/dist/less-1.7.5.min.js" type="text/javascript"></script>
+
+    <!-- CodeMirror stuff, don't know how to AMD it yet -->
+    <link rel="stylesheet" href="lib/CodeMirror/lib/codemirror.css">
+    <link rel="stylesheet" href="lib/CodeMirror/addon/hint/show-hint.css">
+    <link rel="stylesheet" href="lib/CodeMirror/addon/merge/merge.css">
+    <link rel="stylesheet" href="lib/CodeMirror/addon/fold/foldgutter.css">
+
+    <script src="lib/CodeMirror/lib/codemirror.js"></script>
+    <script src="lib/CodeMirror/addon/hint/show-hint.js"></script>
+    <!--
+    <script src="lib/CodeMirror/addon/merge/merge.js"></script>
+    -->
+    <script src="lib/CodeMirror/addon/hint/xml-hint.js"></script>
+    <script src="lib/CodeMirror/mode/xml/xml.js"></script>
+    <script src="lib/CodeMirror/addon/fold/foldcode.js"></script>
+    <script src="lib/CodeMirror/addon/fold/foldgutter.js"></script>
+    <script src="lib/CodeMirror/addon/fold/brace-fold.js"></script>
+    <script src="lib/CodeMirror/addon/fold/xml-fold.js"></script>
+
+    <!-- ------------------------------------------------ -->
+
+
+    <!-- set up Dojo configuration - must be before load of the dojo.js script -->
+    <script type="text/javascript">
+        dojoConfig = {
+            parseOnLoad: true,
+            isDebug: false,
+            async: true,
+            waitSeconds : 0,
+            has : {
+                'dojo-publish-privates' : 1,
+            },
+
+            packages: [
+                {name: 'confd', location: '/confd'},
+                {name: 'tailf', location: '/tailf'},
+                {name: 'confd_tailf', location: '/confd_tailf'},
+                {name: 'custom', location: '/custom'}
+            ],
+
+            aliases: [
+              ['lodash', '/lib/lodash/dist/lodash.min.js'],
+              ['bluebird', '/lib/bluebird/bluebird.min.js'],
+              ['jquery', '/lib/jquery/dist/jquery.min.js'],
+              ['d3',     '/lib/d3_tailf/d3.min.js'],
+              ['Class',  '/lib/Class.js']
+            ],
+            disableTooltip: ((location.search.match(/disableTooltip=([\w\-]+)/) ? RegExp.$1 : 'false') === 'true')
+        }
+    </script>
+
+    <!-- required: dojo.js -->
+    <script type="text/javascript" src="lib/dojo/dojo.js"></script>
+
+    <script type="text/javascript">
+        require([
+            'dojo',
+            'dojo/parser',
+            'lodash',
+            'confd/Main'
+        ], function(
+            dojo,
+            parser,
+            _,
+            main
+        ) {
+            dojo.addOnLoad(function(){
+                _.defer(function() {
+                    // escape dojo's try-catch
+                    //main.run('header', 'sliderMenu', 'contentArea');
+                    main.run();
+                });
+            });
+            parser.parse();
+        });
+    </script>
+  </head>
+
+<body class="claro">
+
+<div class="main">
+</div>
+<div class="tailf-global-changes-result"></div>
+<div class="tailf-global-resolve"></div>
+<div class="tailf-cli-window"></div> 
+</body>
+
+</html>

@@ -1,0 +1,221 @@
+ConfD Example - use of MAAPI in JAVA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The example illustrates how to use MAAPI (The Management Agent API).
+
+What the Example does
+~~~~~~~~~~~~~~~~~~~~~
+
+* during start up: application creates MAAPI transaction and adds current date
+  and time to the `start-log`  list  (shows how to use `maapi_start_trans`,
+  `maapi_create` and `maapi_set_elem`)
+* during validation: application iterates (with `maapi_cursor`) through the
+  list elements in `/config/items` and if sum of values is greater than 100,
+  the transaction is rejected (shows how to use `maapi_cursor`)
+* simple data provider for the list `/state/items` that mirrors (through MAAPI)
+  the elements of the list `/config/items` (shows how to get values from
+  `/config/items` via MAAPI with use of `maapi_get_elem`, `maapi_get_next`)
+* custom CLI command that displays how many times the application was started
+  (counts elements in the list `start-log` - shows how to use `maapi_cursor`
+   in the action callback)
+* custom CLI command that displays all elements of list `/config/items`  with
+  value equal to command's argument (shows how to use `maapi_xpath_eval`)
+* custom CLI command that displays all elements of list `/config/items`  with
+  value smaller than command's argument (shows how to use `maapi_query_*`)
+* custom CLI command `maapi_confirmed_commit` that partly duplicates build in
+  `commit` command and shows how to perform confirmed commit `maapi` API
+  (see description of individual `maapi` functions in ConfD User Guide).
+
+Syntax:
+   `maapi_confirmed_commit [persist <id>][timeout <timeout>]` - start commit
+   `maapi_confirmed_commit (abort|confirm) [<id>]` - confirm/abort commit
+   `maapi_confirmed_commit status` - get status
+
+   `maapi_confirmed_commit`  ->
+            `candidateConfirmedCommitPersistent(0, null, null)`
+   `maapi_confirmed_commit timeout t` ->
+            `candidateConfirmedCommitPersistent(t, null, null)`
+   `maapi_confirmed_commit persist id` ->
+            `candidateConfirmedCommitPersistent(0, id, null)`
+   `maapi_confirmed_commit persist id timeout t` ->
+            `candidateConfirmedCommitPersistent(t, id, null)`
+   `maapi_confirmed_commit confirm`  ->
+            `candidateCommitPersistent(null)`
+   `maapi_confirmed_commit abort`  ->
+            `candidateAbortCommitPersistent(null)`
+   `maapi_confirmed_commit confirm id`  ->
+            `candidateCommitPersistent(id)`
+   `maapi_confirmed_commit abort id`  ->
+            `candidateAbortCommitPersistent(id)`
+   `maapi_confirmed_commit status`  ->
+            `confirmedCommitInProgress`
+
+Source code
+~~~~~~~~~~~
+
+Description of class methods (see corresponding classes in the source code):
+
+1. 'createDaemon' method - this method (called from `main`) initializes
+    example application (connection to the ConfD, registration of the
+    callbacks) and starts main ConfD loop of `Dp` object. Note, than in JAVA
+    we do not need to create additional ConfD loop threads (like in C or
+    Python), we only specify number of ConfD threads during initialization
+    of the `Dp` object. The Java API creates thread pool and automatically
+    assigns threads as needed.
+
+2. `updateStartLog` method - this method is invoked directly from the
+    `createDaemon` function. To write to the CDB with use of MAAPI, it has to
+    first create a user session towards ConfD (`startUserSession`) and start
+    transaction (`startTrans`). After that, current time is added to the
+    `start-log` list (`create`). At the end, the transaction is applied
+    (`applyTrans`) and copied from candidate data store to the running data
+     store (`candidateCommit`)
+
+3. `ValCbs`
+     - `validate` method - performs the validation, iterates through the list
+        `/config/items` and sums all values. If the sum is greater than
+        specified threshold (100), the validation fails and the transaction is
+        rejected
+
+4. `DataCbs`
+     - `iterator` - creates and returns iterator for data key elements
+     - `getKey`   - extract key value from the iterator object
+     - `getElem` -  method that mirrors leaf elements from
+                    list `/config/items` to the list `/state/items`
+
+5. `ClispecCbs` - callback methods for clispec commands
+    - `doStartCount` - clispec command callback method that iterates through
+                         the list `/config/start-log` using `MaapiCursor`,
+                         counts how many times the application was already
+                         started and prints this information to the CLI session
+                         using `getCLIInteraction`
+    - `doShowItems` - clispec command callback method that takes integer
+                       value as argument. It searches list `/config/items` for
+                       elements with value equal to this argument value. The
+                       `xpathEval` function (with iteration object)
+                       is used to find the elements. Names of the found elements
+                       are printed to the CLI session.
+   - `doShowItemsSmallerThan` - clispec command callback method that takes
+                          integer value as argument. It searches list
+                          `/config/items` for elements with value smaller to
+                          this argument value. The MAAPI `queryStart` method
+                          is used to find the elements. Names of found elements
+                          are printed to the CLI session.
+6. `ClispecCommitCbs` methods
+   - `performMaapiCandidateConfirmedCommit` - start confirmed commit (with
+                                              persist id, timeout or with
+                                              both)
+   - `performMaapiCommitStatus` - print (into CLI) confirmed commit status
+   - `confirmMaapiCandidateCommit` - confirm commit (optionally with persist
+                                        id)
+   - `performMaapiCommitAbort` - abort commit (optionally with persist id)
+   - `doConfirmedCommit` - clispec command callback method that parses
+                             arguments and calls above confirmed commit
+                             methods accordingly
+
+Starting and running the Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 1. Build the necessary files and start ConfD by typing
+
+        $ make all start
+
+ 2. Start the C-style CLI with 'make cli-c' in a different window and try some
+    commands
+
+       show running-config config start-log
+
+       config start-log 2017-10-09T15:05:20-00:00
+       !
+
+       config
+       config items a value 10
+       config items b value 30
+       commit
+       top
+       end
+
+       show running-config config items
+       config items a
+        value 10
+       !
+       config items b
+        value 30
+       !
+
+       show state items
+       NAME  VALUE
+       -------------
+       a     10
+       b     30
+
+       start-count
+       Application startup count 1
+
+       show items-with 30
+       Item b
+
+       config
+       config items c value 71
+       commit
+       Aborted: 'config items c': Sum of value elements in /config/items is 111,
+       which is greater than 100!
+
+       show items-with-smaller-than 20
+       Item a
+
+       show items-with-smaller-than 31
+       Item a
+       Item b
+
+ 3. Confirmed commit - start the C-style CLI with 'make cli-c' in a different
+    window and try some commands (note `maapi_confirmed_commit` is available
+    only on top level of config mode)
+
+        config shared
+        config items 10; top
+
+        maapi_confirmed_commit persist abc
+        Confirmed commit started!
+        Persist: abc
+
+        maapi_confirmed_commit status
+        Ongoing commit in progress!
+        Session id: 29
+
+        maapi_confirmed_commit abort
+        Confirmed commit aborted!
+        confirmed commit operation not confirmed by admin from cli
+        configuration rolled back
+
+        maapi_confirmed_commit status
+        No ongoing commit in progress!
+
+        config items 10; top
+        maapi_confirmed_commit timeout 60
+        Confirmed commit started!
+        Timeout: 60s
+
+        maapi_confirmed_commit status
+        Ongoing commit in progress!
+        Session id: 29
+
+        <wait more than 1 minute>
+
+
+        confirmed commit operation not confirmed by admin from cli
+        configuration rolled back
+
+        maapi_confirmed_commit status
+        No ongoing commit in progress!
+
+ 4. Stop and clean
+
+        $ make stop
+        $ make clean
+
+Further Reading
+~~~~~~~~~~~~~~~
+
++ ConfD User Guide:
++ man 3 confd_lib_maapi

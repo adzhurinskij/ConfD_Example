@@ -1,0 +1,15 @@
+module IF-MIB-testowner-deviations {
+  namespace "http://tail-f.com/yang/deviations/IF-MIB-testowner";
+  prefix "if-mib-to-dev";
+  import IF-MIB {
+    prefix "if-mib";
+  }
+
+  deviation "/if-mib:IF-MIB/if-mib:ifTable/if-mib:ifEntry/if-mib:ifTestOwner" {
+    deviate replace {
+      type if-mib:OwnerString {
+        length 0..255;
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+module HOST-RESOURCES-MIB-date-deviations {
+  namespace "http://tail-f.com/yang/deviations/HOST-RESOURCES-MIB-date";
+  prefix "host-resources-date-dev";
+  import HOST-RESOURCES-MIB {
+    prefix "hr";
+  }
+  import SNMPv2-TC {
+    prefix snmpv2-tc;
+  }
+
+  deviation "/hr:HOST-RESOURCES-MIB/hr:hrSystem/hr:hrSystemDate" {
+    deviate replace {
+      type snmpv2-tc:DateAndTime {
+        length 8..11;
+      }
+    }
+  }
+  deviation "/hr:HOST-RESOURCES-MIB/hr:hrFSTable/hr:hrFSEntry" +
+  "/hr:hrFSLastPartialBackupDate" {
+    deviate replace {
+      type snmpv2-tc:DateAndTime {
+        length 8..11;
+      }
+    }
+  }
+  deviation "/hr:HOST-RESOURCES-MIB/hr:hrFSTable/hr:hrFSEntry" +
+  "/hr:hrFSLastFullBackupDate" {
+    deviate replace {
+      type snmpv2-tc:DateAndTime {
+        length 8..11;
+      }
+    }
+  }
+  deviation "/hr:HOST-RESOURCES-MIB/hr:hrSWInstalledTable" +
+  "/hr:hrSWInstalledEntry/hr:hrSWInstalledDate" {
+    deviate replace {
+      type snmpv2-tc:DateAndTime {
+        length 8..11;
+      }
+    }
+  }
+}

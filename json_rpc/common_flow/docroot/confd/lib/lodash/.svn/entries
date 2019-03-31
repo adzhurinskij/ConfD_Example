@@ -1,0 +1,40 @@
+8
+
+dir
+104608
+svn://repository.tail-f.com/tags/confd-6.7.3/examples.confd/json_rpc/common_flow/docroot/confd/lib/lodash
+svn://repository.tail-f.com
+
+
+
+2019-02-05T17:41:44.690141Z
+104574
+git-to-svn
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+2a660a1d-4e03-0410-a5f5-99798c2b1c65
+
+lodash.js
+file
+
+
+
+
+2019-02-06T16:29:30.000000Z
+06d28202bf48e22a9d90673c8498c0d5
+2019-02-05T17:41:44.690141Z
+104574
+git-to-svn
+

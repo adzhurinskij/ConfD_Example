@@ -1,0 +1,7 @@
+logs
+ssh-keydir
+candidate.db
+global.data
+confd-cdb/*.cdb
+yang/*.h
+yang/*.fxs

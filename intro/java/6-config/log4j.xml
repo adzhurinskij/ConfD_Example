@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+  <appender name="console" class="org.apache.log4j.ConsoleAppender">
+    <param name="threshold" value="warn" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern"
+        value="&#60;%-4p&#62; %d{dd-MMM-yyyy::HH:mm:ss.SSS} %C %M %t: - %m%n"/>
+    </layout>
+  </appender>
+
+  <appender name="file" class="org.apache.log4j.FileAppender">
+    <param name="file" value="6-config.log" />
+    <param name="threshold" value="trace" />
+    <param name="append" value="false" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern"
+        value="&#60;%-4p&#62; %d{dd-MMM-yyyy::HH:mm:ss.SSS} %C %M %t: - %m%n"/>
+    </layout>
+  </appender>
+
+  <root>
+    <priority value ="trace" />
+    <appender-ref ref="console" />
+    <appender-ref ref="file" />
+  </root>
+
+</log4j:configuration>

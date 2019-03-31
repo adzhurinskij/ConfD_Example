@@ -1,0 +1,322 @@
+@leaf-value-background : #fefefe;
+@leaf-value-input-background   : #efefef;
+@leaf-value-input-border-color : #00ff00;
+
+
+
+
+.icon-plus {
+	background-image: url('confd/images/icons-16x16-enabled.png'); 
+	width: 16px;
+	height: 16px;
+}
+
+.icon-plus {
+    background-position: 0px;
+}
+
+
+
+
+body {
+    //width : 100%;
+    //height : 400px;;
+}
+
+div.main.dijitBorderContainer {
+    width : 100%;
+    height : 100%;
+
+    //background : red;
+
+    > div.dijitMenuBar {
+        table.confd-commit {
+        }
+
+        table.confd-commit.has-write-th {
+            td.dijitButtonNode {
+                background : #a9ca60;
+            }
+        }
+    }
+
+    > div.dijitAccordionContainer {
+        width : 200px;
+        height : 100%;
+
+        //background : blue;
+    }
+}
+
+div.tailf-yang-content {
+    div.model-row {
+        min-height : 25px;
+    }
+}
+
+
+div.tailf-dijit-schema-model-tabs {
+    width : 100%;
+    height : 100%;
+
+    div.nowrapTabStrip {
+
+        // Tab text icon centering
+        span.dijitTabButtonIcon {
+            margin-top : -2px;
+        }
+        span.tabLabel {
+            margin-top : 3px;
+        }
+    }
+
+    > div.dijitTabContainer {
+        height : 100%;
+
+        div.tailf-yang-content {
+            table {
+                td.tableContainer-valueCell {
+                    div.tailf-leaf-textbox {
+                        background : @leaf-value-background;
+
+                        input {
+                            //border: 1px solid #006 !important;
+                            background: @leaf-value-input-background !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+// ----- Auto rendered field values
+
+td.tableContainer-valueCell {
+    div.tailf-leaf-textbox {
+
+        .original-template {
+            width   : 15em;
+            padding : 0 .1rem;
+            border  : .1rem solid rgb(180, 180, 180);
+            border-radius : .3rem;
+
+            input:focus {
+                outline: none;
+            }
+        }
+
+        .tailf-leaf-error-text {
+            max-width : 15em;
+            color : rgba(255, 0, 0, 0.5);
+        }
+    }
+
+    div.tailf-leaf-textboxFocused {
+        .original-template {
+            border  : .1rem solid rgb(0, 178, 236);
+        }
+    }
+
+    div.leaf-invalid-value .original-template {
+        background: rgba(255,0,0, 0.1);
+        div.dijitInputContainer {
+            input {
+            }
+        }
+    }
+}
+
+
+div.tailf-dijit-schema-model-container-3 {
+    width : 100%;
+
+    div.model-row {
+        overflow   : auto;
+        max-height : 150px;
+    }
+
+    div.widget-cell {
+        min-height : 70px;
+        max-height : 150px;
+        display : inline-block;
+
+        > div > div.dijitInline {
+            width : 100%;
+        }
+     }
+
+    div.yang-choice {
+        div.yang-choice-elements {
+            margin-left : 50px;
+            overflow : auto;
+            background : #f8f8f8;
+        }
+    }
+
+    div.model-container-action-list-row {
+        // Action input list row
+        height : 200px;
+
+        div.widget-cell {
+            height : 200px !important;
+            width : 100% !important;
+
+            div > div.dijitInline {
+                width : 100%;
+            }
+        }
+    }
+
+    div.tailf-dijit-schema-action-input-list {
+        width      : 100%;
+    }
+}
+
+div.tailf-dijit-schema-list {
+    width : 100%;
+    height : 100%;
+
+    div.gridx {
+        width  : 100%;
+        height : 95%;
+    }
+}
+
+div.tailf-dijit-schema-leaflist {
+    margin-bottom : 10px;
+
+    > table {
+        width : 90%;
+    }
+
+    tr.title-row {
+    }
+
+    tr.leaflist-content {
+
+        td.values {
+            div.gridx {
+                height : 100px;
+            }
+        }
+
+        td.values > div {
+            //min-height : 100px;
+        }
+        td.actions {
+            vertical-align : top;
+
+            > span.dijitButton {
+                width : 20px;
+                height : 20px;
+
+                span.dijitButtonNode {
+                    padding : 0px;
+                    width : 20px;
+                    height : 22px;
+
+                    span.dijitIcon {
+                        margin-left : 2px;
+                        margin-top  : 2px;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+.action-parameters-background {
+    background : #f0f0f0;
+    min-height : 3rem;
+}
+
+div.tailf-dijit-schema-model-container-3.tailf-action-input-parameters {
+    .action-parameters-background;
+    margin-top    : 5px;
+    margin-bottom : 10px;
+}
+
+div.tailf-dijit-schema-model-container-3.tailf-action-output-parameters {
+    .action-parameters-background;
+    margin-top: 10px;
+}
+
+
+div.tailf-dialog {
+    // Make dojo-dialog non transparent
+    background: none repeat-x scroll left top #FFFFFF; 
+
+    div.dijitDialogPaneActionBar {
+        vertical-align : bottom;
+    }
+}
+
+div.tailf-modeltabs-add-list-item-dialog {
+    //width : 500px;
+    //height : 400px;
+}
+
+div.tailf-keypath-editor {
+    height : 22px;
+
+    div.keypath-header {
+        float : left;
+        margin-top : 3px;
+    }
+
+    div.CodeMirror {
+        height : 22px;
+        background : #f8f8f8;
+    }
+
+    textarea {
+        //background : #f8f8f8;
+    }
+}
+
+
+
+div.tailf-rollback-content {
+
+    div.rollback-control {
+        margin-bottom : 0px;
+
+        div.rollback-button {
+            float : left;
+            margin-right : 10px;
+        }
+
+        div.rollback-path {
+            div.tailf-keypath-editor {
+                padding-top : 3px;
+            }
+        }
+    }
+
+    div.rollback-content {
+        clear : both; 
+        height : 95%;
+        div.CodeMirror {
+            height : 100%;
+        }
+    }
+}
+
+div.tailf-cli-terminal {
+    background : #f0f0f0;
+
+    div.terminal-content {
+        height : 100%;
+        outline-style: none;
+        font-family: menlo, "Courier New", Courier, "Nimbus Mono L", monospace;
+        #cursor {
+            background-color: #aaa;
+        }
+     }
+}
+
+

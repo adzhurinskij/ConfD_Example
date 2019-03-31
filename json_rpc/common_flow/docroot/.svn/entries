@@ -1,0 +1,58 @@
+8
+
+dir
+104608
+svn://repository.tail-f.com/tags/confd-6.7.3/examples.confd/json_rpc/common_flow/docroot
+svn://repository.tail-f.com
+
+
+
+2019-02-05T17:41:44.690141Z
+104574
+git-to-svn
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+2a660a1d-4e03-0410-a5f5-99798c2b1c65
+
+login
+dir
+
+confd
+dir
+
+index.html
+file
+
+
+
+
+2019-02-06T16:29:30.000000Z
+3f619bc9e99a07bf598316c8a9ee5eb9
+2019-02-05T17:41:44.690141Z
+104574
+git-to-svn
+
+login.html
+file
+
+
+
+
+2019-02-06T16:29:30.000000Z
+86d0f7ed26994f875db7456eebf7fa2a
+2019-02-05T17:41:44.690141Z
+104574
+git-to-svn
+

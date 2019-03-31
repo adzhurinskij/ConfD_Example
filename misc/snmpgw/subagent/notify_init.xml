@@ -1,0 +1,11 @@
+<SNMP-NOTIFICATION-MIB xmlns="http://tail-f.com/ns/mibs/SNMP-NOTIFICATION-MIB/200210140000Z">
+  <snmpNotifyTable>
+    <snmpNotifyEntry>
+      <snmpNotifyName>std_v2_trap</snmpNotifyName>
+      <snmpNotifyTag>std_v2_trap</snmpNotifyTag>
+      <snmpNotifyType>trap</snmpNotifyType>
+    </snmpNotifyEntry>
+  </snmpNotifyTable>
+  <snmpNotifyFilterProfileTable/>
+  <snmpNotifyFilterTable/>
+</SNMP-NOTIFICATION-MIB>

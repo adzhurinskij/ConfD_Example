@@ -1,0 +1,450 @@
+Example: Using the REST API
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  This example shows how to use YANG Patch (RFC 8072) with ConfD. YANG Patch is
+  a method for applying patches to configuration datastores using data defined
+  with the YANG data modeling language.  YANG Patch is designed to support the
+  RESTCONF protocol, defined in RFC 8040.
+
+  No special programming is needed in order to use RESTCONF with ConfD.  The
+  RESTCONF server is enabled in confd.conf.
+
+  For and introduction to the RESTCONF protocol, please see the restconf/basic
+  example.
+
+  In the example, we use the jukebox YANG module from the RESTCONF and
+  YANG Patch RFCs.  It's a simple YANG model with some configuration
+  and status data.  We initialize configuration and operational state
+  into CDB just to have some data to retrieve.
+
+
+
+Starting the Example
+~~~~~~~~~~~~~~~~~~~~
+
+  Build the data model and set up the initial files:
+
+    $ make all
+
+  Start ConfD
+
+    $ make start
+
+  ConfD is now started with some pre-populated data (found in jukebox_init.xml).
+
+Running the Example
+~~~~~~~~~~~~~~~~~~~
+
+  Note that both JSON and XML is supported as data format even though we only
+  use XML in this example.
+
+  1. Ensure that ConfD advertises YANG Patch capability
+
+    $ curl -is \
+           -u admin:admin \
+           -H "Accept: application/yang-data+xml" \
+           http://localhost:8008/restconf/data/restconf-state
+    <restconf-state xmlns="urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring" xmlns:rcmon="urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring">
+    <capabilities>
+      <capability>urn:ietf:params:restconf:capability:defaults:1.0?basic-mode=explicit</capability>
+      <capability>urn:ietf:params:restconf:capability:depth:1.0</capability>
+      <capability>urn:ietf:params:restconf:capability:fields:1.0</capability>
+      <capability>urn:ietf:params:restconf:capability:with-defaults:1.0</capability>
+      <capability>urn:ietf:params:restconf:capability:filter:1.0</capability>
+      <capability>urn:ietf:params:restconf:capability:replay:1.0</capability>
+      <capability>urn:ietf:params:restconf:capability:yang-patch:1.0</capability>
+      <capability>http://tail-f.com/ns/restconf/collection/1.0</capability>
+      <capability>http://tail-f.com/ns/restconf/query-api/1.0</capability>
+    </capabilities>
+    </restconf-state>
+
+
+  2. Create an already existing resource
+
+    $ curl -isu admin:admin \
+           -X PATCH -H "Content-type: application/yang-patch+xml" \
+           -T payloads/add-songs-failure.xml \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/library/artist=Foo%20Fighters/album=Wasting%20Light"
+    HTTP/1.1 100 Continue
+    Server:
+    Allow: GET, POST, OPTIONS, HEAD
+    Content-Length: 0
+
+    HTTP/1.1 409 Conflict
+    Server:
+    Date: Mon, 04 Jun 2018 13:29:49 GMT
+    Allow: GET, POST, OPTIONS, HEAD
+    Last-Modified: Fri, 01 Jan 1971 05:00:00 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-118352-142041
+    Content-Length: 825
+    Content-Type: application/yang-data+xml
+    Vary: Accept-Encoding
+    Pragma: no-cache
+
+
+    <yang-patch-status xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-patch">
+      <patch-id>add-songs-failure</patch-id>
+      <edit-status>
+        <edit>
+          <edit-id>edit1</edit-id>
+          <errors>
+            <error>
+              <error-type>application</error-type>
+              <error-tag>data-exists</error-tag>
+              <error-path xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Bridge Burning']</error-path>
+              <error-message>object already exists:  /jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Bridge Burning']</error-message>
+            </error>
+          </errors>
+        </edit>
+      </edit-status>
+    </yang-patch-status>
+
+
+  3. Create a new resource
+
+    $ curl -isu admin:admin \
+           -X PATCH \
+           -H "Content-type: application/yang-patch+xml" \
+           -T payloads/add-songs-success.xml \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/library/artist=Foo%20Fighters/album=Wasting%20Light"
+    HTTP/1.1 100 Continue
+    Server:
+    Allow: GET, POST, OPTIONS, HEAD
+    Content-Length: 0
+
+    HTTP/1.1 200 OK
+    Server:
+    Date: Mon, 04 Jun 2018 13:35:52 GMT
+    Allow: GET, POST, OPTIONS, HEAD
+    Last-Modified: Mon, 04 Jun 2018 13:35:52 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-119352-269377
+    Content-Length: 152
+    Content-Type: application/yang-data+xml
+    Vary: Accept-Encoding
+    Pragma: no-cache
+
+
+    <yang-patch-status xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-patch">
+      <patch-id>add-songs-patch-success</patch-id>
+      <ok/>
+    </yang-patch-status>
+
+
+  4. Check that the newly added resources exist
+
+    $ curl -isu admin:admin \
+           -H "Accept: application/yang-data+xml" \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/library/artist=Foo%20Fighters/album=Wasting%20Light/song=Dear%20Rosemary"
+    HTTP/1.1 200 OK
+    Server:
+    Date: Mon, 04 Jun 2018 13:38:57 GMT
+    Last-Modified: Mon, 04 Jun 2018 13:35:52 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-119352-269377
+    Content-Type: application/yang-data+xml
+    Transfer-Encoding: chunked
+    Pragma: no-cache
+
+
+    <song xmlns="http://example.com/ns/example-jukebox"xmlns:jbox="http://example.com/ns/example-jukebox">
+      <name>Dear Rosemary</name>
+      <location>/media/dear_rosemary.mp3</location>
+      <format>MP3</format>
+      <length>269</length>
+    </song>
+
+   $ curl -isu admin:admin \
+          -H "Accept: application/yang-data+xml" \
+          "http://localhost:8008/restconf/data/example-jukebox:jukebox/library/artist=Foo%20Fighters/album=Wasting%20Light/song=Rope"
+    HTTP/1.1 200 OK
+    Server:
+    Date: Mon, 04 Jun 2018 13:40:40 GMT
+    Last-Modified: Mon, 04 Jun 2018 13:35:52 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-119352-269377
+    Content-Type: application/yang-data+xml
+    Transfer-Encoding: chunked
+    Pragma: no-cache
+
+
+    <song xmlns="http://example.com/ns/example-jukebox"xmlns:jbox="http://example.com/ns/example-jukebox">
+      <name>Rope</name>
+      <location>/media/rope.mp3</location>
+      <format>MP3</format>
+      <length>259</length>
+    </song>
+
+
+  5. Look at our playlist (it was populated in jukebox_init.xml)
+
+    $ curl -isu admin:admin \
+           -H "Accept: application/yang-data+xml" \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/playlist=Foo-One"
+    HTTP/1.1 200 OK
+    Server:
+    Date: Mon, 04 Jun 2018 13:43:18 GMT
+    Last-Modified: Mon, 04 Jun 2018 13:35:52 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-119352-269377
+    Content-Type: application/yang-data+xml
+    Transfer-Encoding: chunked
+    Pragma: no-cache
+
+
+    <playlist xmlns="http://example.com/ns/example-jukebox"
+              xmlns:jbox="http://example.com/ns/example-jukebox">
+      <name>Foo-One</name>
+      <song>
+        <index>1</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='A Matter Of Time']</id>
+      </song>
+      <song>
+        <index>2</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Back And Forth']</id>
+      </song>
+      <song>
+        <index>3</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Walk']</id>
+      </song>
+      <song>
+        <index>4</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Arlandria']</id>
+      </song>
+      <song>
+        <index>5</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='These Days']</id>
+      </song>
+    </playlist>
+
+
+  6. Insert a new entry into the play list and verify that it's there
+
+    $ curl -isu admin:admin \
+           -X PATCH \
+           -H "Content-type: application/yang-patch+xml" \
+           -T payloads/insert-song-success.xml \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/playlist=Foo-One"
+    HTTP/1.1 100 Continue
+    Server:
+    Allow: GET, POST, OPTIONS, HEAD
+    Content-Length: 0
+
+    HTTP/1.1 200 OK
+    Server:
+    Date: Mon, 04 Jun 2018 13:49:47 GMT
+    Allow: GET, POST, OPTIONS, HEAD
+    Last-Modified: Mon, 04 Jun 2018 13:49:47 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-120187-617560
+    Content-Length: 154
+    Content-Type: application/yang-data+xml
+    Vary: Accept-Encoding
+    Pragma: no-cache
+
+
+    <yang-patch-status xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-patch">
+       <patch-id>insert-song-patch-success</patch-id>
+       <ok/>
+    </yang-patch-status>
+
+    $ curl -isu admin:admin \
+           -H "Accept: application/yang-data+xml" \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/playlist=Foo-One"
+    HTTP/1.1 200 OK
+    Server:
+    Date: Mon, 04 Jun 2018 13:52:54 GMT
+    Last-Modified: Mon, 04 Jun 2018 13:49:47 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-120187-617560
+    Content-Type: application/yang-data+xml
+    Transfer-Encoding: chunked
+    Pragma: no-cache
+
+
+    <playlist xmlns="http://example.com/ns/example-jukebox"
+              xmlns:jbox="http://example.com/ns/example-jukebox">
+      <name>Foo-One</name>
+      <song>
+        <index>1</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='A Matter Of Time']</id>
+      </song>
+      <song>
+        <index>2</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Back And Forth']</id>
+      </song>
+      <song>
+        <index>3</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Walk']</id>
+      </song>
+      <song>
+        <index>4</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Arlandria']</id>
+      </song>
+      <song>
+        <index>5</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='These Days']</id>
+      </song>
+      <song>
+        <index>6</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Bridge Burning']</id>
+      </song>
+    </playlist>
+
+
+  7. Try to insert a new song into a play list that triggers errors using the
+     wrong keypath and a song that doesn't exist.
+
+    $ curl -isu admin:admin \
+           -X PATCH \
+           -H "Content-type: application/yang-patch+xml" \
+           -T payloads/insert-song-failure1.xml \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/playlist=Foo-One"
+    Server:
+    Allow: GET, POST, OPTIONS, HEAD
+    Content-Length: 0
+
+    HTTP/1.1 400 Bad Request
+    Server:
+    Date: Mon, 04 Jun 2018 13:58:43 GMT
+    Allow: GET, POST, OPTIONS, HEAD
+    Last-Modified: Mon, 04 Jun 2018 13:49:47 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-120187-617560
+    Content-Length: 782
+    Content-Type: application/yang-data+xml
+    Vary: Accept-Encoding
+    Pragma: no-cache
+
+
+    <yang-patch-status xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-patch">
+      <patch-id>insert-song-patch-success</patch-id>
+      <edit-status>
+        <edit>
+          <edit-id>edit1</edit-id>
+          <errors>
+            <error>
+              <error-type>application</error-type>
+              <error-tag>malformed-message</error-tag>
+              <error-path xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:playlist[jbox:name='Foo-One']/jbox:song[jbox:index='6']</error-path>
+              <error-message>mismatched keypaths:  /jbox:jukebox/jbox:playlist[jbox:name='Foo-One']/jbox:song[jbox:index='7'] , /jbox:jukebox/jbox:playlist[jbox:name='Foo-One']/jbox:song[jbox:index='6']</error-message>
+            </error>
+          </errors>
+        </edit>
+      </edit-status>
+    </yang-patch-status>
+
+
+    $ curl -isu admin:admin \
+           -X PATCH \
+           -H "Content-type: application/yang-patch+xml" \
+           -T payloads/insert-song-failure2.xml \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/playlist=Foo-One"
+    HTTP/1.1 100 Continue
+    Server:
+    Allow: GET, POST, OPTIONS, HEAD
+    Content-Length: 0
+
+    HTTP/1.1 400 Bad Request
+    Server:
+    Date: Mon, 04 Jun 2018 14:02:17 GMT
+    Allow: GET, POST, OPTIONS, HEAD
+    Last-Modified: Mon, 04 Jun 2018 13:49:47 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-120187-617560
+    Content-Length: 784
+    Content-Type: application/yang-data+xml
+    Vary: Accept-Encoding
+    Pragma: no-cache
+
+
+    <yang-patch-status xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-patch">
+      <patch-id>insert-song-patch-success</patch-id>
+      <edit-status>
+        <edit>
+          <edit-id>edit1</edit-id>
+          <errors>
+            <error>
+              <error-type>application</error-type>
+              <error-tag>malformed-message</error-tag>
+              <error-path xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:playlist[jbox:name='Foo-One']/jbox:song[jbox:index='16']</error-path>
+              <error-message>mismatched keypaths:  /jbox:jukebox/jbox:playlist[jbox:name='Foo-One']/jbox:song[jbox:index='6'] , /jbox:jukebox/jbox:playlist[jbox:name='Foo-One']/jbox:song[jbox:index='16']</error-message>
+            </error>
+          </errors>
+        </edit>
+      </edit-status>
+    </yang-patch-status>
+
+
+  8. Move a song in the play list and verify the result
+
+    $ curl -isu admin:admin \
+           -X PATCH \
+           -H "Content-type: application/yang-patch+xml" \
+           -T payloads/move-song.xml \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/playlist=Foo-One"
+    HTTP/1.1 100 Continue
+    Server:
+    Allow: GET, POST, OPTIONS, HEAD
+    Content-Length: 0
+
+    HTTP/1.1 200 OK
+    Server:
+    Date: Mon, 04 Jun 2018 14:07:16 GMT
+    Allow: GET, POST, OPTIONS, HEAD
+    Last-Modified: Mon, 04 Jun 2018 14:07:16 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-121236-889117
+    Content-Length: 154
+    Content-Type: application/yang-data+xml
+    Vary: Accept-Encoding
+    Pragma: no-cache
+
+
+    <yang-patch-status xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-patch">
+      <patch-id>insert-move-patch-success</patch-id>
+      <ok/>
+    </yang-patch-status>
+
+    $ curl -isu admin:admin \
+           -H "Accept: application/yang-data+xml" \
+           "http://localhost:8008/restconf/data/example-jukebox:jukebox/playlist=Foo-One"
+    HTTP/1.1 200 OK
+    Server:
+    Date: Mon, 04 Jun 2018 14:08:38 GMT
+    Last-Modified: Mon, 04 Jun 2018 14:07:16 GMT
+    Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+    Etag: 1528-121236-889117
+    Content-Type: application/yang-data+xml
+    Transfer-Encoding: chunked
+    Pragma: no-cache
+
+
+    <playlist xmlns="http://example.com/ns/example-jukebox"xmlns:jbox="http://example.com/ns/example-jukebox">
+      <name>Foo-One</name>
+      <song>
+        <index>2</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Back And Forth']</id>
+      </song>
+      <song>
+        <index>3</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Walk']</id>
+      </song>
+      <song>
+        <index>1</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='A Matter Of Time']</id>
+      </song>
+      <song>
+        <index>4</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Arlandria']</id>
+      </song>
+      <song>
+        <index>5</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='These Days']</id>
+      </song>
+      <song>
+        <index>6</index>
+        <id xmlns:jbox="http://example.com/ns/example-jukebox">/jbox:jukebox/jbox:library/jbox:artist[jbox:name='Foo Fighters']/jbox:album[jbox:name='Wasting Light']/jbox:song[jbox:name='Bridge Burning']</id>
+      </song>
+    </playlist>

@@ -1,0 +1,13 @@
+{
+  "ietf-yang-patch:yang-patch" : {
+    "patch-id" : "move-song-patch",
+    "comment" : "Move song 1 after song 3",
+    "edit" : {
+        "edit-id" : "edit1",
+        "operation" : "move",
+        "target" : "/song=1",
+        "point" : "/song=3",
+        "where" : "after"
+      }
+  }
+}

@@ -1,0 +1,13 @@
+module dhcpd-oper {
+
+  namespace "http://tail-f.com/ns/example/dhcpd-oper";
+  prefix do;
+
+  container stat {
+    leaf addr_in_use {
+      config false;
+      type uint32;
+    }
+  }
+
+}

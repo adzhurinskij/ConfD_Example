@@ -1,0 +1,5 @@
+Port 2592
+UsePrivilegeSeparation no
+TCPKeepAlive yes
+AuthorizedKeysFile /home/guoliang/Desktop/WorkSpace/Learn/examples.confd/netconf_call_home/openssh/authorized_keys
+Subsystem     netconf   /home/guoliang/Desktop/WorkSpace/Learn/examples.confd/netconf_call_home/openssh/netconf-subsys

@@ -1,0 +1,18 @@
+<yang-patch xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-patch">
+  <patch-id>insert-song-patch-success</patch-id>
+  <comment>Insert song 6 after song 5</comment>
+  <edit>
+    <edit-id>edit1</edit-id>
+    <operation>insert</operation>
+    <target>/song=6</target>
+    <point>/song=5</point>
+    <where>after</where>
+    <value>
+      <song xmlns="http://example.com/ns/example-jukebox">
+        <index>7</index>
+        <id>/jukebox/library/artist[name='Foo Fighters']/album[name='Wasting Light']/song[name='Bridge Burning']
+        </id>
+      </song>
+    </value>
+  </edit>
+</yang-patch>

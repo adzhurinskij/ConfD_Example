@@ -1,0 +1,93 @@
+module system {
+  namespace "http://tail-f.com/ns/example/system";
+  prefix system;
+
+  import tailf-common {
+    prefix tailf;
+  }
+
+  import SNMP-COMMUNITY-MIB {
+    prefix SNMP-COMMUNITY-MIB;
+  }
+
+  import confd_dyncfg {
+    prefix dyncfg;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import tailf-xsd-types {
+    prefix xs;
+  }
+
+  container system {
+    description "
+      System setup.
+    ";
+    container cli {
+      description "
+        CLI settings.
+      ";
+      leaf prompt {
+        type string;
+        tailf:link "/dyncfg:confdConfig/dyncfg:cli/dyncfg:prompt1";
+      }
+      leaf editPrompt {
+        type string;
+        tailf:link "/dyncfg:confdConfig/dyncfg:cli/dyncfg:prompt2";
+      }
+      leaf idleTimeout {
+        type xs:duration;
+        tailf:link "/dyncfg:confdConfig/dyncfg:cli/dyncfg:idleTimeout";
+      }
+    }
+    container snmp {
+      description "
+        SNMP agent settings.
+      ";
+      leaf enabled {
+        type boolean;
+        tailf:link "/dyncfg:confdConfig/dyncfg:snmpAgent/dyncfg:enabled";
+      }
+      leaf sysDescr {
+        type string;
+        tailf:link "/dyncfg:confdConfig/dyncfg:snmpAgent/"
+                 + "dyncfg:system/dyncfg:sysDescr";
+      }
+      leaf sysOID {
+        type yang:object-identifier;
+        tailf:link "/dyncfg:confdConfig/dyncfg:snmpAgent/"
+                 + "dyncfg:system/dyncfg:sysObjectID";
+      }
+      leaf EngineID {
+        type tailf:hex-list;
+        tailf:link "/dyncfg:confdConfig/dyncfg:snmpAgent/"
+                 + "dyncfg:snmpEngine/dyncfg:snmpEngineID";
+      }
+      leaf communityString {
+        type string;
+        tailf:link "/SNMP-COMMUNITY-MIB:SNMP-COMMUNITY-MIB/"
+                 + "SNMP-COMMUNITY-MIB:snmpCommunityTable/"
+                 + "SNMP-COMMUNITY-MIB:snmpCommunityEntry"
+                 + "[snmpCommunityIndex='public']/"
+                 + "SNMP-COMMUNITY-MIB:snmpCommunityName";
+      }
+      container address {
+        description "
+          SNMP agent listen address.
+        ";
+        leaf ip {
+          type inet:ip-address;
+          tailf:link "/dyncfg:confdConfig/dyncfg:snmpAgent/dyncfg:ip";
+        }
+        leaf port {
+          type inet:port-number;
+          tailf:link "/dyncfg:confdConfig/dyncfg:snmpAgent/dyncfg:port";
+        }
+      }
+    }
+  }
+}

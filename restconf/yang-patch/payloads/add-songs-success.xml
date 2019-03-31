@@ -1,0 +1,29 @@
+<yang-patch xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-patch">
+  <patch-id>add-songs-patch-success</patch-id>
+  <edit>
+    <edit-id>edit2</edit-id>
+    <operation>create</operation>
+    <target>/song=Rope</target>
+    <value>
+      <song xmlns="http://example.com/ns/example-jukebox">
+        <name>Rope</name>
+        <location>/media/rope.mp3</location>
+        <format>MP3</format>
+        <length>259</length>
+      </song>
+    </value>
+  </edit>
+  <edit>
+    <edit-id>edit3</edit-id>
+    <operation>create</operation>
+    <target>/song=Dear%20Rosemary</target>
+    <value>
+      <song xmlns="http://example.com/ns/example-jukebox">
+        <name>Dear Rosemary</name>
+        <location>/media/dear_rosemary.mp3</location>
+        <format>MP3</format>
+        <length>269</length>
+      </song>
+    </value>
+  </edit>
+</yang-patch>

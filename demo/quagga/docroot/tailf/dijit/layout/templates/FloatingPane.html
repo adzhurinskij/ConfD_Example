@@ -1,0 +1,11 @@
+<div class="tailf dojoxFloatingPane" id="${id}">
+	<div tabindex="0" role="button" class="dojoxFloatingPaneTitle" dojoAttachPoint="focusNode">
+		<span dojoAttachPoint="closeNode" dojoAttachEvent="onclick: hideOrDestroy" class="dojoxFloatingCloseIcon"></span>
+		<span dojoAttachPoint="titleNode" class="dijitInline dijitTitleNode"></span>
+    </div>
+	<div dojoAttachPoint="canvas" class="dojoxFloatingPaneCanvas">
+		<div dojoAttachPoint="containerNode" role="region" tabindex="-1" class="${contentClass}">
+		</div>
+		<span dojoAttachPoint="resizeHandle" class="dojoxFloatingResizeHandle"></span>
+	</div>
+</div>

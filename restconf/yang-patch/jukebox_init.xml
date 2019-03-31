@@ -1,0 +1,107 @@
+<config xmlns="http://tail-f.com/ns/config/1.0">
+  <jukebox xmlns="http://example.com/ns/example-jukebox">
+    <library>
+      <artist>
+        <name>Foo Fighters</name>
+        <album>
+          <name>Wasting Light</name>
+          <genre>alternative</genre>
+          <year>2012</year>
+          <admin>
+            <label>Roswell/RCA/BMG</label>
+            <catalogue-number>7432197348-2</catalogue-number>
+          </admin>
+          <song>
+            <name>Arlandria</name>
+            <location>arlandria.mp3</location>
+            <length>267</length>
+          </song>
+          <song>
+            <name>Bridge Burning</name>
+            <location>bridge_burning.mp3</location>
+            <length>286</length>
+          </song>
+        <!--
+          <song>
+            <name>Dear Rosemary</name>
+            <location>dear_rosemary.mp3</location>
+            <length>266</length>
+          </song>
+          <song>
+            <name>Rope</name>
+            <location>rope.mp3</location>
+            <length>259</length>
+          </song>
+        -->
+          <song>
+            <name>White Limo</name>
+            <location>white_limo.mp3</location>
+            <length>202</length>
+          </song>
+          <song>
+            <name>These Days</name>
+            <location>these_days.mp3</location>
+            <length>298</length>
+          </song>
+          <song>
+            <name>Back And Forth</name>
+            <location>back_and_forth.mp3</location>
+            <length>231</length>
+          </song>
+          <song>
+            <name>A Matter Of Time</name>
+            <location>a_matter_of_time.mp3</location>
+            <length>276</length>
+          </song>
+          <song>
+            <name>I Should Have Known</name>
+            <location>i_should_have_known.mp3</location>
+            <length>255</length>
+          </song>
+          <song>
+            <name>Walk</name>
+            <location>walk.mp3</location>
+            <length>255</length>
+          </song>
+        </album>
+      </artist>
+      <artist>
+        <name>Nick Cave and the Bad Seeds</name>
+        <album>
+          <name>Tender Prey</name>
+          <genre>alternative</genre>
+          <year>1988</year>
+        </album>
+      </artist>
+    </library>
+    <playlist>
+      <name>Foo-One</name>
+      <song>
+        <index>1</index>
+        <id>/jukebox/library/artist[name='Foo Fighters']/album[name='Wasting Light']/song[name='A Matter Of Time']</id>
+      </song>
+    <!--
+      <song>
+        <index>2</index>
+        <id>/jukebox/library/artist[name='Foo Fighters']/album[name='Wasting Light']/song[name='Dear Rosemary']</id>
+      </song>
+    -->
+      <song>
+        <index>2</index>
+        <id>/jukebox/library/artist[name='Foo Fighters']/album[name='Wasting Light']/song[name='Back And Forth']</id>
+      </song>
+      <song>
+        <index>3</index>
+        <id>/jukebox/library/artist[name='Foo Fighters']/album[name='Wasting Light']/song[name='Walk']</id>
+      </song>
+      <song>
+        <index>4</index>
+        <id>/jukebox/library/artist[name='Foo Fighters']/album[name='Wasting Light']/song[name='Arlandria']</id>
+      </song>
+      <song>
+        <index>5</index>
+        <id>/jukebox/library/artist[name='Foo Fighters']/album[name='Wasting Light']/song[name='These Days']</id>
+      </song>
+    </playlist>
+  </jukebox>
+</config>

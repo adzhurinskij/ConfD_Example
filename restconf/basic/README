@@ -1,0 +1,485 @@
+Example: Using the REST API
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  This example shows how to enable the HTTP-based RESTCONF API to ConfD,
+  and how to use this API.
+
+  No special programming is needed in order to enable RESTCONF in ConfD.
+  The RESTCONF server is enabled in confd.conf.
+
+  The API is demonstrated by walking through some queries.  In this
+  example, we use the command line tool 'curl' to communicate with
+  ConfD.  Additionally, the Python program 'restconf.py' in this
+  directory demonstrates programmatic usage of the RESTful API.
+
+  In the example, we use an example YANG module from
+  www.yang-central.org, dhcp.yang.  It has some configuration
+  parameters, some status data, and an action.  We initialize the
+  configuration with data from dhcp_init.xml and then we load some
+  dummy operational data from dhcp_oper.xml into CDB, just so we have
+  some data to retrieve.
+
+
+
+Python Program
+~~~~~~~~~~~~~~
+
+  In addition to the resource operation demonstrations using 'curl'
+  shown below, this example includes 'restconf.py' which demonstrates
+  RESTful API access from Python.  In order to run restconf.py, you also
+  need to have installed the 'requests' and 'lxml' packages for Python.
+
+  Running the Python example:
+
+    $ ./restconf.py
+
+
+curl Demonstration
+~~~~~~~~~~~~~~~~~~
+Starting the Example
+~~~~~~~~~~~~~~~~~~~~
+
+  Build the data model and set up the initial files:
+
+    $ make all
+
+  Start ConfD
+
+    $ make start
+
+  ConfD is now started with some pre-populated data (found in dhcpd_init.xml).
+
+
+Sending REST requests
+~~~~~~~~~~~~~~~~~~~~~
+
+  In this example, we will authenticate as the user 'admin' with
+  password 'admin'.
+
+0.  Root Resource Discovery
+
+  With RESTCONF, the root part of the URL path is configurable by
+  setting it in the confd.conf file. A mechanism exist to discover
+  the RESTCONF root by getting the '/.well-known/host-meta' resource
+  and using the <Link> element containing the 'restconf' attribute:
+
+  $ curl -v -u admin:admin http://localhost:8008/.well-known/host-meta
+  * Hostname was NOT found in DNS cache
+  *   Trying 127.0.0.1...
+  * Connected to localhost (127.0.0.1) port 8008 (#0)
+  * Server auth using Basic with user 'admin'
+  > GET /.well-known/host-meta HTTP/1.1
+  > Authorization: Basic YWRtaW46YWRtaW4=
+  > User-Agent: curl/7.35.0
+  > Host: localhost:8008
+  > Accept: */*
+  >
+  < HTTP/1.1 200 OK
+  * Server  is not blacklisted
+  < Server:
+  < Date: Thu, 20 Oct 2016 08:43:37 GMT
+  < Content-Length: 107
+  < Content-Type: application/xrd+xml
+  < Vary: Accept-Encoding
+  <
+  <XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'>
+      <Link rel='restconf' href='/restconf'/>
+  </XRD>
+
+  As can be seen from the result above, our RESTCONF root part is '/restconf'
+  (which also is the default unless configured to be something else).
+
+
+1.  Top-level GET
+
+  Send the first RESTCONF query to get a representation of the top-level
+  resource, which is accessible through the path '/restconf':
+
+  $ curl -v -u admin:admin http://localhost:8008/restconf
+  * Hostname was NOT found in DNS cache
+  *   Trying 127.0.0.1...
+  * Connected to localhost (127.0.0.1) port 8008 (#0)
+  * Server auth using Basic with user 'admin'
+  > GET /restconf HTTP/1.1
+  > Authorization: Basic YWRtaW46YWRtaW4=
+  > User-Agent: curl/7.35.0
+  > Host: localhost:8008
+  > Accept: */*
+  >
+  < HTTP/1.1 200 OK
+  * Server  is not blacklisted
+  < Server:
+  < Date: Thu, 20 Oct 2016 08:37:43 GMT
+  < Cache-Control: private, no-cache, must-revalidate, proxy-revalidate
+  < Content-Length: 157
+  < Content-Type: application/yang-data+xml
+  < Vary: Accept-Encoding
+  < Pragma: no-cache
+  <
+  <restconf xmlns="urn:ietf:params:xml:ns:yang:ietf-restconf">
+    <data/>
+    <operations/>
+    <yang-library-version>2016-06-21</yang-library-version>
+  </restconf>
+
+  As can be seen from the result, the server in this example exposes
+  three additional resources; 'data', 'operations', and 'yang-library-version'.
+
+  Note:
+
+    o  See the content-type header; contains the media-type for the
+       resource.
+
+  The result can be returned as JSON format as well. This is specified
+  using an alternative MIME type for the Accept header, e.g.
+
+  $ curl -H "Accept: application/yang-data+json" -u admin:admin \
+    http://localhost:8008/restconf
+
+  {"restconf":{"data":{},"operations":{},"yang-library-version":"2016-06-21"}}
+
+
+2.  GET of data
+
+  The 'data' resource represents the combined configuration and
+  state data resources that can be accessed by a client.
+  We can get everything under this resource by following the link below:
+
+  $ curl -s -u admin:admin http://localhost:8008/restconf/data
+
+  (add -H "Accept: application/yang-data+json" for JSON format)
+
+
+3.  GET with selector
+
+  We can also get less of the data tree by making use of the 'depth'
+  query parameter (default is 'unbounded').
+
+  $ curl -s -u admin:admin http://localhost:8008/restconf/data\?depth=1
+
+  $ curl -s -u admin:admin http://localhost:8008/restconf/data\?depth=4
+
+  $ curl -s -u admin:admin http://localhost:8008/restconf/data\?depth=unbounded
+
+  (add -H "Accept: application/yang-data+json" for JSON format)
+
+
+4.  Delete parts of the config
+
+  First we find a resource to delete.
+
+  $ curl -s -u admin:admin http://localhost:8008/restconf/data/dhcp/subnet
+
+  Then save the resource we want to delete to a local file, in this
+  case the subnet resource:
+
+  $ curl -s -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/subnet=10.254.239.0%2F27 \
+    | xsltproc remove-attributes.xsl - > saved-subnet
+
+  or
+
+  $ curl -H "Accept: application/yang-data+json" -s \
+    -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/subnet=10.254.239.0%2F27 > \
+    saved-subnet.json
+
+  Note that, for the XML case, we use a XSLT script to remove all XML
+  attributes from the resulting file. This is not necessary, but is only
+  used to show that the RESTCONF server can handle simple XML without all the
+  attributes (including 'xmlns' attributes).
+
+  Now we can delete the resource:
+
+  $ curl -v -X DELETE -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/subnet=10.254.239.0%2F27
+
+  < HTTP/1.1 204 No Content
+
+  Make sure it not there anymore:
+
+  $ curl -v -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/subnet=10.254.239.0%2F27
+
+  < HTTP/1.1 404 Not Found
+
+
+5.  Create a new resource
+
+  Let's re-create the subnet resource we just deleted.
+
+  In order to create a resource, we POST the resource to its parent:
+
+  $ curl -v -X POST -T saved-subnet -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp
+
+  or
+
+  $ curl -H "Content-Type: application/yang-data+json" -v -X POST \
+    -T saved-subnet.json -u admin:admin http://localhost:8008/restconf/data/dhcp
+
+  < HTTP/1.1 201 Created
+  < Location: http://localhost:8008/restconf/data/dhcp/subnet=10.254.239.0%2F27
+
+  The Location header contains the URL for the newly created resource.
+
+
+6a.   Modify an existing resource (XML)
+
+  Go to (6b) if you prefer to work with JSON format.
+
+  The PATCH method is used to modify an existing resource:
+
+  $ cat > patch-subnet
+  <subnet>
+    <max-lease-time>3333</max-lease-time>
+  </subnet>
+  [Ctrl-D]
+
+  $ curl -X PATCH -T patch-subnet -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/subnet=10.254.239.0%2F27
+
+  Verify the change:
+
+  $ curl -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/\
+subnet=10.254.239.0%2F27\?fields=max-lease-time
+
+  Note how the 'fields' query parameter was used to get a single leaf.
+
+6b.   Modify an existing resource (JSON)
+
+  Do the same as in (6a) but with JSON payload.
+
+  The PATCH method is used to modify an existing resource:
+
+  $ cat > patch-subnet.json
+  {"subnet": { "max-lease-time": 3333 }}
+  [Ctrl-D]
+
+  $ curl -H "Content-Type: application/yang-data+json" -X PATCH \
+    -T patch-subnet.json -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/subnet=10.254.239.0%2F27
+
+  Verify the change:
+
+  $ curl -H "Accept: application/yang-data+json" -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/\
+subnet=10.254.239.0%2F27\?fields=max-lease-time
+
+  Note how the 'fields' query parameter was used to get a single leaf.
+
+
+7.  Replace an existing resource
+
+  PUT is used to completely replace an existing resource:
+
+  $ curl -X PUT -T saved-subnet -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/subnet=10.254.239.0%2F27
+
+  or
+
+  $ curl -H "Content-Type: application/yang-data+json" -X PUT \
+    -T saved-subnet.json -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/subnet=10.254.239.0%2F27
+
+  Verify the change:
+
+  $ curl -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/\
+subnet=10.254.239.0%2F27\?fields=max-lease-time
+
+  <max-lease-time>1200</max-lease-time>
+
+  or
+
+  $ curl -H "Accept: application/yang-data+json" -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/\
+subnet=10.254.239.0%2F27\?fields=max-lease-time
+
+  {
+    "dhcp:subnet": {
+      "max-lease-time": 1200
+    }
+  }
+
+8.  Evaluate an action
+
+  A POST request is used to evaluate an action. dhcp.yang defines an
+  action "set-clock" under /dhcp with a well defined set of input and
+  output parameters, i.e.
+
+  tailf:action set-clock {
+    tailf:actionpoint actions;
+    input {
+      leaf clockSettings {
+        type yang:date-and-time;
+        mandatory true;
+      }
+      leaf utc {
+        type boolean;
+        default true;
+      }
+      leaf syncHardwareClock {
+        type boolean;
+        default false;
+        description "Make sure that the hardware clock is synchronized.";
+      }
+    }
+    output {
+      leaf systemClock {
+        type yang:date-and-time;
+        mandatory true;
+      }
+      leaf hardwareClock {
+        type yang:date-and-time;
+        mandatory true;
+      }
+    }
+  }
+
+  Available actions (and rpc) can be listed with a GET request on the
+  '/restconf/operations' resource.
+
+  $ curl -u admin:admin http://localhost:8008/restconf/operations
+  <restconf xmlns="urn:ietf:params:xml:ns:yang:ietf-restconf">
+    <operations>
+      <dhcp:set-clock xmlns:dhcp="http://yang-central.org/ns/example/dhcp">
+        /restconf/data/dhcp/dhcp:set-clock
+      </dhcp:set-clock>
+
+    ....
+    </operations>
+  </restconf>
+
+  The resource for the "set-clock" action is
+  "/restconf/operations/dhcp/dhcp:set-clock" and in order to evaluate
+  it; input parameters such as these are prepared:
+
+  $ cat > action-params.xml
+  <input>
+    <clockSettings>1992-12-12T11:11:11</clockSettings>
+    <utc>true</utc>
+    <syncHardwareClock>true</syncHardwareClock>
+  </input>
+  [Ctrl-D]
+
+  which then can be used in a POST request to evaluate the action:
+
+  $ curl -v -X POST -T action-params.xml -u admin:admin \
+    http://localhost:8008//restconf/operations/dhcp/dhcp:set-clock
+
+  < HTTP/1.1 200 OK
+
+  <output xmlns='http://yang-central.org/ns/example/dhcp'>
+    <systemClock>0000-00-00T03:00:00+00:00</systemClock>
+    <hardwareClock>0000-00-00T04:00:00+00:00</hardwareClock>
+  </output>
+
+  Done!
+
+9.  Rollbacks
+
+  Configurations can be rolled back to previous incarnations using the
+  rollback functionality. First we will get all the available rollback files:
+
+  $ curl -is -u admin:admin
+    http://localhost:8008//restconf/data/tailf-rollback:rollback-files
+
+  <rollback-files xmlns="http://tail-f.com/ns/rollback"
+                  xmlns:y="urn:ietf:params:xml:ns:yang:ietf-restconf"
+                  xmlns:rollback="http://tail-f.com/ns/rollback">
+    <file>
+      <id>0</id>
+      <name>rollback0</name>
+      <fixed-number>10003</fixed-number>
+      <creator>admin</creator>
+      <date>2016-10-20 15:01:51</date>
+      <via>rest</via>
+    </file>
+    <file>
+      <id>1</id>
+      <name>./confd-cdb/rollback1</name>
+      <creator>admin</creator>
+      <date>2016-10-20 14:59:59</date>
+      <via>rest</via>
+    </file>
+    <file>
+      <id>2</id>
+      <name>rollback2</name>
+      <fixed-number>10002</fixed-number>
+      <creator>admin</creator>
+      <date>2016-10-20 14:55:38</date>
+      <via>rest</via>
+    </file>
+    <file>
+      <id>3</id>
+      <name>rollback3</name>
+      <fixed-number>10001</fixed-number>
+      <creator>admin</creator>
+      <date>2016-10-20 14:05:23</date>
+      <via>rest</via>
+    </file>
+    <file>
+      <id>4</id>
+      <name>rollback4</name>
+      <fixed-number>10000</fixed-number>
+      <creator>admin</creator>
+      <date>2016-10-20 14:01:35</date>
+      <via>rest</via>
+    </file>
+  </rollback-files>
+
+  (The above rollback files are available if all previous steps in the
+  README file have been performed.)
+
+  To inspect the content of a rollback file '0' we make a POST to the
+  'get-rollback-file' action. With the input:
+
+  $  cat > input_0.xml
+  <input xmlns="http://tail-f.com/ns/rollback">
+    <id>0</id>
+  </input>
+
+  $ curl -is -u admin:admin  -X POST -T input_0.xml \
+    http://localhost:8008/restconf/operations/\
+tailf-rollback:rollback-files/get-rollback-file
+
+  <output xmlns='http://tail-f.com/ns/rollback'>
+    <content>
+  # Created by: admin
+  # Date: 2016-10-20 15:01:51
+  # Via: rest
+  # Type: delta
+  # Label:
+  # Comment:
+  # No: 10004
+
+  dhcp {
+      subnet 10.254.239.0/27 {
+          max-lease-time 4444;
+      }
+   }
+  </content>
+  </output>
+
+
+  To apply a rollback file use the 'tailf-rollback:apply-rollback-file' action:
+
+  $ curl -is -u admin:admin  -X POST -T input_0.xml \
+    http://localhost:8008/restconf/data/\
+tailf-rollback:rollback-files/apply-rollback-file
+
+  Verify the rollback result:
+
+  $ curl -s -H "Accept: application/yang-data+json" -u admin:admin \
+    http://localhost:8008/restconf/data/dhcp/\
+subnet=10.254.239.0%2F27\?fields=max-lease-time
+
+  {
+    "dhcp:subnet": {
+      "max-lease-time": 4444
+    }
+  }
+
+  Looks good.

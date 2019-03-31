@@ -1,0 +1,55 @@
+module routes {
+
+  namespace "http://tail-f.com/ns/example/routes";
+  prefix routes;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  import tailf-common {
+    prefix tailf;
+  }
+
+  container system {
+
+    container ip {
+
+      list route {
+
+        config false;
+        // write operational data for this part of model into CDB
+        tailf:cdb-oper {
+          // keep in RAM only, no need to persist on disk
+          tailf:persistent false;
+        }
+
+        key "destination";
+
+        leaf destination {
+         type inet:ip-address;
+        }
+
+        leaf gateway {
+         type inet:ip-address;
+        }
+
+        leaf netmask {
+         type inet:ip-address;
+        }
+
+        leaf flags {
+         type string;
+        }
+
+        leaf metric {
+         type uint8;
+        }
+
+        leaf ifname {
+         type string;
+        }
+      }
+    }
+  }
+}

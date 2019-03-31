@@ -1,0 +1,23 @@
+{
+  "ietf-yang-patch:yang-patch" : {
+    "patch-id" : "insert-song-patch",
+    "comment" : "Insert song 6 after song 5",
+    "edit" : [
+      {
+        "edit-id" : "edit1",
+        "operation" : "insert",
+        "target" : "/song=6",
+        "point" : "/song=5",
+        "where" : "after",
+        "value" : {
+          "example-jukebox:song" : [
+            {
+              "index" : 7,
+              "id" : "/example-jukebox:jukebox/library/artist[name='Foo Fighters']/album[name='Wasting Light']/song[name='Bridge Burning']"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

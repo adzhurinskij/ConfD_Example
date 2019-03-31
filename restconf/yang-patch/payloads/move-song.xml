@@ -1,0 +1,11 @@
+<yang-patch xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-patch">
+  <patch-id>insert-move-patch-success</patch-id>
+  <comment>Move song 1 after song 3</comment>
+  <edit>
+    <edit-id>edit1</edit-id>
+    <operation>move</operation>
+    <target>/song=1</target>
+    <point>/song=3</point>
+    <where>after</where>
+  </edit>
+</yang-patch>

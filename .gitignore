@@ -1,0 +1,53 @@
+# ignore the GUN automake files
+compile
+config.h.in
+config.status
+depcomp
+aclocal.m4
+INSTALL
+install-sh
+missing
+stamp-h1
+Makefile.in
+**/.deps
+**/autom4te.cache
+*.log
+*.m4
+*.lo
+*.guess
+*.sub
+*.o
+ltmain.sh
+libtool
+*.la
+configure
+.dirstamp
+
+# ignore build result directory
+**/.vscode
+**/build
+**/build_d
+
+# ignore cmake files
+**/cmake-build-debug
+
+# ignore visual studio generate files
+**/Debug
+**/Release
+**/x64
+
+# ignore the confD make result
+**/cli-history
+**/confd-cdb
+**/ssh-keydir
+*.fxs
+confderr.log.1
+confderr.log.idx
+confderr.log.siz
+global.data
+localhost:8008.access
+localhost:8888.access
+
+# ignore the temporary file
+Doc/~$M概要设计文档.docx
+Previous/libxconfd/test/test

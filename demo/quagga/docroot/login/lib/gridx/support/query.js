@@ -1,0 +1,4 @@
+//>>built
+define("gridx/support/query",["dojo/query","dojo/_base/array","dojo/_base/lang","dojo/dom-class"],function(a,m,g,l){var f=function(h,d){var e=a.apply(null,arguments);if(!d||"object"===typeof h||"string"===typeof h&&/^[^>]*>\s*[^>\s]*$/.test(h))return e;var b=a(d).closest(".gridx")[0];if(b){var g=b.getAttribute("id"),k=b.childNodes[2].childNodes[1];if(!f.isGridInGrid[g]||!a(".gridx",b).length||!k.contains(d)&&!d.contains(k))return e}else return e;return e.filter(function(c){l.contains(c,"gridx")&&
+(c=c.parentNode?c.parentNode:null);return a(c).closest(".gridx")[0]===b})};f.isGridInGrid={};g.mixin(f,a);return f});
+//# sourceMappingURL=query.js.map

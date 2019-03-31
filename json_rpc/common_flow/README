@@ -1,0 +1,51 @@
+ConfD JSON-RPC API common flow example
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is a simple example that shows basic use of the json-rpc api.
+
+- Login
+- Create a new read transaction
+- Read a value
+- Create a new webui (read-write) transaction, in preparation for
+  changing the value
+- Change a value
+- Commit (save) the changes
+- Meanwhile, subscribe to changes of both configuration and
+  operational data using a Comet channel and receive notifications
+
+This example contains both the dhcpd data model called dhcpd.yang as used in the
+intro/1-2-3 example and a simple operational data model called dhcpd-oper.yang.
+The live operational data stored in CDB is being updated by an external data
+provider.  There is no WebUI component involved in this example.  Log messages
+are being written to the HTML page directly from the bottom up direction.
+
+A NETCONF client called 'netconf-console' is used in this example.
+The 'netconf-console' is part of the ConfD installation (found in
+the 'bin' directory). This client communicates with ConfD over SSH and
+requires Python Paramiko package (on Ubuntu you can install it by command
+'apt-get install python-paramiko').
+In case SSH cannot be used, there is 'netconf-console-tcp' variant. To
+use 'netconf-console-tcp', update 'confd.conf' to enable
+'netconf/transport/tcp' and change all 'netconf-console' calls
+to 'netconf-console-tcp' (in 'Makefile').
+
+To build and start the Web UI:
+
+# make clean all start
+
+If you want to stop the ConfD daemon:
+
+# make stop
+
+Browse and Configure
+~~~~~~~~~~~~~~~~~~~~
+
+Open up your favorite web browser to the ConfD machine, either http on
+port 8008 or https on port 8888.
+
+# firefox http://localhost:8008
+
+Log in with user name 'admin' and password 'admin'.
+
+You will see a configuration change notification on the HTML page if
+you modify and commit the change to "/dhcpd:dhcp/maxLeaseTime".
