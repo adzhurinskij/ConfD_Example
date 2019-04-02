@@ -1,0 +1,251 @@
+TAIL-F-SIMPLE-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+    enterprises, MODULE-IDENTITY, OBJECT-TYPE,
+    Integer32, Unsigned32, Counter32, Counter64,
+    Gauge32, IpAddress
+        FROM SNMPv2-SMI
+    TEXTUAL-CONVENTION, RowStatus, DateAndTime,
+    TruthValue
+        FROM SNMPv2-TC
+;
+
+tailfSimpleMIB MODULE-IDENTITY
+    LAST-UPDATED "200912020000Z"
+    ORGANIZATION "@ORGANIZATION"
+    CONTACT-INFO "@CONTACT-INFO"
+    DESCRIPTION ""
+    REVISION "200912020000Z"
+    DESCRIPTION "@REVISION-DESCRIPTION"
+    ::= { enterprises 24961 2 }
+
+UnsignedShort ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "d"
+    STATUS      current
+    DESCRIPTION "xs:unsignedShort"
+    SYNTAX      Unsigned32 (0 .. 65535)
+
+InetAddressIP ::= TEXTUAL-CONVENTION
+    STATUS      current
+    DESCRIPTION "confd:inetAddressIP"
+    SYNTAX      OCTET STRING (SIZE (4|16))
+
+String ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "1t"
+    STATUS      current
+    DESCRIPTION "xs:string"
+    SYNTAX      OCTET STRING
+
+NameType ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "1t"
+    STATUS      current
+    DESCRIPTION ""
+    SYNTAX      OCTET STRING (SIZE (0 .. 64))
+
+simpleObjects OBJECT IDENTIFIER ::= { tailfSimpleMIB 1 }
+
+numberOfServers OBJECT-TYPE
+    SYNTAX      UnsignedShort
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION ""
+    ::= { simpleObjects 1 }
+
+numberOfHosts OBJECT-TYPE
+    SYNTAX      UnsignedShort
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION ""
+    ::= { simpleObjects 2 }
+
+maxNumberOfServers OBJECT-TYPE
+    SYNTAX      UnsignedShort (0 .. 1024)
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION ""
+    ::= { simpleObjects 3 }
+
+maxNumberOfHosts OBJECT-TYPE
+    SYNTAX      UnsignedShort
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION ""
+    ::= { simpleObjects 4 }
+
+hostTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF HostEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    ::= { simpleObjects 5 }
+
+hostEntry OBJECT-TYPE
+    SYNTAX      HostEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    INDEX { hostName }
+        ::= { hostTable 1 }
+
+HostEntry ::=
+    SEQUENCE {
+        hostName NameType,
+        hostEnabled TruthValue,
+        hostNumberOfServers UnsignedShort,
+        hostRowstatus RowStatus
+    }
+
+hostName OBJECT-TYPE
+    SYNTAX      NameType
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    ::= { hostEntry 1 }
+
+hostEnabled OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION ""
+    ::= { hostEntry 2 }
+
+hostNumberOfServers OBJECT-TYPE
+    SYNTAX      UnsignedShort
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION ""
+    ::= { hostEntry 3 }
+
+hostRowstatus OBJECT-TYPE
+    SYNTAX      RowStatus
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION ""
+    ::= { hostEntry 4 }
+
+serverTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF ServerEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    ::= { tailfSimpleMIB 6 }
+
+serverEntry OBJECT-TYPE
+    SYNTAX      ServerEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    INDEX { hostName, serverName }
+        ::= { serverTable 1 }
+
+ServerEntry ::=
+    SEQUENCE {
+        serverName NameType,
+        serverAddressIp IpAddress,
+        serverAddressPort UnsignedShort,
+        serverRowstatus RowStatus
+    }
+
+serverName OBJECT-TYPE
+    SYNTAX      NameType
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serverEntry 1 }
+
+serverAddressIp OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serverEntry 2 }
+
+serverAddressPort OBJECT-TYPE
+    SYNTAX      UnsignedShort (1 .. 65535)
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serverEntry 3 }
+
+serverRowstatus OBJECT-TYPE
+    SYNTAX      RowStatus
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serverEntry 4 }
+
+serviceTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF ServiceEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    ::= { simpleObjects 6 }
+
+serviceEntry OBJECT-TYPE
+    SYNTAX      ServiceEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    INDEX { serviceAddress, servicePortNumber }
+        ::= { serviceTable 1 }
+
+ServiceEntry ::=
+    SEQUENCE {
+        serviceAddress IpAddress,
+        servicePortNumber UnsignedShort,
+        serviceHostName NameType,
+        serviceServerName NameType,
+        serviceUsername String,
+        servicePassword String,
+        serviceRadiusIp InetAddressIP
+    }
+
+serviceAddress OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serviceEntry 1 }
+
+servicePortNumber OBJECT-TYPE
+    SYNTAX      UnsignedShort (1 .. 65535)
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serviceEntry 2 }
+
+serviceHostName OBJECT-TYPE
+    SYNTAX      NameType
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serviceEntry 3 }
+
+serviceServerName OBJECT-TYPE
+    SYNTAX      NameType
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serviceEntry 4 }
+
+serviceUsername OBJECT-TYPE
+    SYNTAX      String
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serviceEntry 5 }
+
+servicePassword OBJECT-TYPE
+    SYNTAX      String
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serviceEntry 6 }
+
+serviceRadiusIp OBJECT-TYPE
+    SYNTAX      InetAddressIP
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION ""
+    ::= { serviceEntry 7 }
+
+END

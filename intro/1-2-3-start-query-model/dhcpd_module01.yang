@@ -1,0 +1,42 @@
+submodule dhcpd_module01 {
+  belongs-to dhcpd {
+    prefix dm;
+  }
+
+    grouping try-group {
+        container vector {
+            leaf a {
+                type string;
+                //default defval;
+                mandatory true;
+            }
+            leaf b {
+                type int32;
+                default 10;
+            }
+        }
+
+        list try_list {
+            key "lst_index1 lst_index2";
+            leaf lst_index1 {
+                type int32;
+            }
+            leaf lst_index2 {
+                type int32;
+            }
+            leaf listcontent1 {
+                type string;
+                mandatory true;
+            }
+            leaf listcontent2 {
+                type string;
+                default "defval2";
+            }
+            leaf listcontent3 {
+                type string;
+                //default defval3;
+                mandatory true;
+            }
+        }
+    }
+}

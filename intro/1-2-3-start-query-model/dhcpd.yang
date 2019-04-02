@@ -11,6 +11,12 @@ module dhcpd {
     prefix xs;
   }
 
+  //import dhcpd_module01 {
+  //  prefix dhcpd-m;
+  //}
+
+  include dhcpd_module01;
+
   typedef loglevel {
     type enumeration {
         enum kern;
@@ -81,9 +87,12 @@ module dhcpd {
           type string;
         }
         container SubNets {
+          
           uses subNet ;
         }
+        uses try-group;
       }
     }
+    
   }
 }
