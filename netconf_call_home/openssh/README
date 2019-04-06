@@ -1,5 +1,7 @@
 ConfD Example - NETCONF SSH Call Home
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+参考：
+https://tools.ietf.org/html/rfc8071
 
 This example demonstrates NETCONF SSH Call Home (RFC 8071) using an external
 SSH daemon, in this case OpenSSH.
