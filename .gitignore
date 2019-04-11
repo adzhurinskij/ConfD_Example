@@ -40,7 +40,6 @@ configure
 **/cli-history
 **/confd-cdb
 **/ssh-keydir
-*.fxs
 confderr.log.1
 confderr.log.idx
 confderr.log.siz
