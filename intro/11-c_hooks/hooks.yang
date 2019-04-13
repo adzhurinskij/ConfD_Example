@@ -19,18 +19,30 @@ module hooks {
         leaf name {
             type string;
         }
+
         leaf ip {
+            // 数据模型中的callpoint
             tailf:callpoint ip_mask {
+                // 数据模型中的set-hook
                 tailf:set-hook node;
             }
             type inet:ipv4-address;
         }
+
         leaf netmask {
             tailf:callpoint ip_mask {
                 tailf:set-hook node;
             }
             type inet:ipv4-address;
         }
+
+        leaf pathno {
+            tailf:callpoint ip_mask{
+                tailf:set-hook node;
+            }
+            type uint8;
+        }
+
         leaf gw {
             type inet:ipv4-address;
         }

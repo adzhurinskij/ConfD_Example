@@ -43,8 +43,8 @@ static struct confd_daemon_ctx *dctx;
 static int ctlsock;
 static int workersock;
 
-
-struct aentry {
+struct aentry
+{
     struct in_addr ip4;
     char *hwaddr;
     int perm;
@@ -53,11 +53,11 @@ struct aentry {
     struct aentry *next;
 };
 
-struct arpdata {
+struct arpdata
+{
     struct aentry *arp_entries;
     struct timeval lastparse;
 };
-
 
 /********************************************************************/
 
@@ -78,10 +78,13 @@ static void free_arp(struct arpdata *dp)
 {
     struct aentry *ae = dp->arp_entries;
 
-    while (ae) {
+    while (ae)
+    {
         struct aentry *next = ae->next;
-        if(ae->hwaddr) free(ae->hwaddr);
-        if(ae->iface) free(ae->iface);
+        if (ae->hwaddr)
+            free(ae->hwaddr);
+        if (ae->iface)
+            free(ae->iface);
         free(ae);
         ae = next;
     }
@@ -96,7 +99,8 @@ static void add_aentry(struct aentry **first, struct aentry *new)
     while (*prev != NULL &&
            (memcmp(&new->ip4, &(*prev)->ip4, sizeof(struct in_addr)) > 0 ||
             (memcmp(&new->ip4, &(*prev)->ip4, sizeof(struct in_addr)) == 0 &&
-             strcmp(new->iface, (*prev)->iface) > 0))) {
+             strcmp(new->iface, (*prev)->iface) > 0)))
+    {
         prev = &(*prev)->next;
     }
     new->next = *prev;
@@ -115,14 +119,16 @@ static int run_arp(struct arpdata *dp)
 
     if ((fp = popen("arp -an", "r")) == NULL)
         return CONFD_ERR;
-    while (fgets(&buf[0], BUFSIZ, fp) != NULL) {
+    while (fgets(&buf[0], BUFSIZ, fp) != NULL)
+    {
         char *cp = strtok(&buf[0], sep);
 
-        if ((ae = (struct aentry*) malloc(sizeof(struct aentry))) == NULL) {
+        if ((ae = (struct aentry *)malloc(sizeof(struct aentry))) == NULL)
+        {
             pclose(fp);
             return CONFD_ERR;
         }
-        memset((void*)ae, 0, sizeof(struct aentry));
+        memset((void *)ae, 0, sizeof(struct aentry));
 
         /* Now lazy parse lines like */
         /* ? (192.168.1.1) at 00:0F:B5:EF:11:00 [ether] on eth0 */
@@ -133,23 +139,31 @@ static int run_arp(struct arpdata *dp)
         assert(strcmp(strtok(NULL, sep), "at") == 0);
         cp = strtok(NULL, sep);
 
-        if ((strcmp(cp, "incomplete") == 0)) {
+        if ((strcmp(cp, "incomplete") == 0))
+        {
             assert(strcmp(strtok(NULL, sep), "on") == 0);
             cp = strtok(NULL, sep);
-        } else if ((strcmp(cp, "<from_interface>") == 0)) {
+        }
+        else if ((strcmp(cp, "<from_interface>") == 0))
+        {
             cp = strtok(NULL, sep);
-            while (cp) {
-                if (strcmp(cp, "on") == 0) {
+            while (cp)
+            {
+                if (strcmp(cp, "on") == 0)
+                {
                     cp = strtok(NULL, sep);
                     break;
                 }
                 cp = strtok(NULL, sep);
             }
-        } else {
+        }
+        else
+        {
             /* some common error cases handled, get real hw addr */
             ae->hwaddr = strdup(cp);
 
-            while (1) {
+            while (1)
+            {
                 cp = strtok(NULL, sep);
                 if (cp == NULL)
                     break;
@@ -159,7 +173,8 @@ static int run_arp(struct arpdata *dp)
                     ae->pub = 1;
                 else if (strcmp(cp, "[ether]") == 0)
                     ;
-                else if (strcmp(cp, "on") == 0) {
+                else if (strcmp(cp, "on") == 0)
+                {
                     cp = strtok(NULL, sep);
                     break;
                 }
@@ -168,11 +183,13 @@ static int run_arp(struct arpdata *dp)
 
         /* cp should now point to the interface name
            - this is required since it is a key */
-        if (cp) {
+        if (cp)
+        {
             ae->iface = strdup(cp);
 
             /* Some OSes have perm/pub after interface name */
-            while ((cp = strtok(NULL, sep)) != NULL) {
+            while ((cp = strtok(NULL, sep)) != NULL)
+            {
                 if (strcmp(cp, "permanent") == 0)
                     ae->perm = 1;
                 else if (strcmp(cp, "published") == 0)
@@ -180,7 +197,9 @@ static int run_arp(struct arpdata *dp)
             }
 
             add_aentry(&dp->arp_entries, ae);
-        } else {
+        }
+        else
+        {
             /* skip this entry */
             free(ae);
         }
@@ -200,7 +219,8 @@ static int s_init(struct confd_trans_ctx *tctx)
     if ((dp = malloc(sizeof(struct arpdata))) == NULL)
         return CONFD_ERR;
     memset(dp, 0, sizeof(struct arpdata));
-    if (run_arp(dp) == CONFD_ERR) {
+    if (run_arp(dp) == CONFD_ERR)
+    {
         free(dp);
         return CONFD_ERR;
     }
@@ -213,7 +233,8 @@ static int s_finish(struct confd_trans_ctx *tctx)
 {
     struct arpdata *dp = tctx->t_opaque;
 
-    if (dp != NULL) {
+    if (dp != NULL)
+    {
         free_arp(dp);
         free(dp);
     }
@@ -223,23 +244,30 @@ static int s_finish(struct confd_trans_ctx *tctx)
 /********************************************************************/
 
 static int get_next(struct confd_trans_ctx *tctx,
-                         confd_hkeypath_t *keypath,
-                         long next)
+                    confd_hkeypath_t *keypath,
+                    long next)
 {
     struct arpdata *dp = tctx->t_opaque;
     struct aentry *curr;
     confd_value_t v[2];
 
-    if (next == -1) {  /* first call */
-        if (need_arp(dp)) {
+    printf("\n +++ get next +++ \n");
+
+    if (next == -1)
+    { /* first call */
+        if (need_arp(dp))
+        {
             if (run_arp(dp) == CONFD_ERR)
                 return CONFD_ERR;
         }
         curr = dp->arp_entries;
-    } else {
+    }
+    else
+    {
         curr = (struct aentry *)next;
     }
-    if (curr == NULL) {
+    if (curr == NULL)
+    {
         confd_data_reply_next_key(tctx, NULL, -1, -1);
         return CONFD_OK;
     }
@@ -251,18 +279,18 @@ static int get_next(struct confd_trans_ctx *tctx,
     return CONFD_OK;
 }
 
-
 struct aentry *find_ae(confd_hkeypath_t *keypath, struct arpdata *dp)
 {
     struct in_addr ip = CONFD_GET_IPV4(&keypath->v[1][0]);
-    char *iface = (char*)CONFD_GET_BUFPTR(&keypath->v[1][1]);
+    char *iface = (char *)CONFD_GET_BUFPTR(&keypath->v[1][1]);
     struct aentry *ae = dp->arp_entries;
 
-    while (ae != NULL) {
+    while (ae != NULL)
+    {
         if (ip.s_addr == ae->ip4.s_addr &&
-            (strcmp(ae->iface, iface) == 0) )
+            (strcmp(ae->iface, iface) == 0))
             return ae;
-        ae=ae->next;
+        ae = ae->next;
     }
     return NULL;
 }
@@ -274,16 +302,23 @@ struct aentry *find_ae(confd_hkeypath_t *keypath, struct arpdata *dp)
 static int get_elem(struct confd_trans_ctx *tctx,
                     confd_hkeypath_t *keypath)
 {
+    printf("\n +++ get elem +++ \n");
+    fflush(stdout);
+
     confd_value_t v;
 
     struct aentry *ae = find_ae(keypath, tctx->t_opaque);
-    if (ae == NULL) {
+    if (ae == NULL)
+    {
         confd_data_reply_not_found(tctx);
         return CONFD_OK;
     }
-    switch (CONFD_GET_XMLTAG(&(keypath->v[0][0]))) {
+
+    switch (CONFD_GET_XMLTAG(&(keypath->v[0][0])))
+    {
     case arpe_hwaddr:
-        if (ae->hwaddr == NULL) {
+        if (ae->hwaddr == NULL)
+        {
             confd_data_reply_not_found(tctx);
             return CONFD_OK;
         }
@@ -317,11 +352,13 @@ int main(int argc, char *argv[])
     struct confd_trans_cbs trans;
     struct confd_data_cbs data;
 
-    memset(&trans, 0, sizeof (struct confd_trans_cbs));
+    memset(&trans, 0, sizeof(struct confd_trans_cbs));
     trans.init = s_init;
     trans.finish = s_finish;
 
-    memset(&data, 0, sizeof (struct confd_data_cbs));
+    // ________________________________________________callpoint的用法
+    // 在程序中，设置yang模型的callpoint点的回调函数
+    memset(&data, 0, sizeof(struct confd_data_cbs));
     data.get_elem = get_elem;
     data.get_next = get_next;
     strcpy(data.callpoint, arpe__callpointid_arpe);
@@ -333,8 +370,8 @@ int main(int argc, char *argv[])
     addr.sin_family = AF_INET;
     addr.sin_port = htons(CONFD_PORT);
 
-    if (confd_load_schemas((struct sockaddr*)&addr,
-                           sizeof (struct sockaddr_in)) != CONFD_OK)
+    if (confd_load_schemas((struct sockaddr *)&addr,
+                           sizeof(struct sockaddr_in)) != CONFD_OK)
         confd_fatal("Failed to load schemas from confd\n");
 
     if ((dctx = confd_init_daemon("arpe_daemon")) == NULL)
@@ -343,21 +380,22 @@ int main(int argc, char *argv[])
     /* Create the first control socket, all requests to */
     /* create new transactions arrive here */
 
-    if ((ctlsock = socket(PF_INET, SOCK_STREAM, 0)) < 0 )
+    if ((ctlsock = socket(PF_INET, SOCK_STREAM, 0)) < 0)
         confd_fatal("Failed to open ctlsocket\n");
-    if (confd_connect(dctx, ctlsock, CONTROL_SOCKET, (struct sockaddr*)&addr,
-                      sizeof (struct sockaddr_in)) < 0)
+    if (confd_connect(dctx, ctlsock, CONTROL_SOCKET, (struct sockaddr *)&addr,
+                      sizeof(struct sockaddr_in)) < 0)
         confd_fatal("Failed to confd_connect() to confd \n");
 
     /* Also establish a workersocket, this is the most simple */
     /* case where we have just one ctlsock and one workersock */
 
-    if ((workersock = socket(PF_INET, SOCK_STREAM, 0)) < 0 )
+    if ((workersock = socket(PF_INET, SOCK_STREAM, 0)) < 0)
         confd_fatal("Failed to open workersocket\n");
-    if (confd_connect(dctx, workersock, WORKER_SOCKET,(struct sockaddr*)&addr,
-                      sizeof (struct sockaddr_in)) < 0)
+    if (confd_connect(dctx, workersock, WORKER_SOCKET, (struct sockaddr *)&addr,
+                      sizeof(struct sockaddr_in)) < 0)
         confd_fatal("Failed to confd_connect() to confd \n");
 
+    // 最终通过这个回调注册函数注册
     if (confd_register_trans_cb(dctx, &trans) == CONFD_ERR)
         confd_fatal("Failed to register trans cb \n");
 
@@ -367,7 +405,8 @@ int main(int argc, char *argv[])
     if (confd_register_done(dctx) != CONFD_OK)
         confd_fatal("Failed to complete registration \n");
 
-    while(1) {
+    while (1)
+    {
         struct pollfd set[2];
         int ret;
 
@@ -379,26 +418,35 @@ int main(int argc, char *argv[])
         set[1].events = POLLIN;
         set[1].revents = 0;
 
-        if (poll(set, sizeof(set)/sizeof(*set), -1) < 0) {
+        if (poll(set, sizeof(set) / sizeof(*set), -1) < 0)
+        {
             perror("Poll failed:");
             continue;
         }
 
         /* Check for I/O */
-        if (set[0].revents & POLLIN) {
-            if ((ret = confd_fd_ready(dctx, ctlsock)) == CONFD_EOF) {
+        if (set[0].revents & POLLIN)
+        {
+            if ((ret = confd_fd_ready(dctx, ctlsock)) == CONFD_EOF)
+            {
                 confd_fatal("Control socket closed\n");
-            } else if (ret == CONFD_ERR && confd_errno != CONFD_ERR_EXTERNAL) {
+            }
+            else if (ret == CONFD_ERR && confd_errno != CONFD_ERR_EXTERNAL)
+            {
                 confd_fatal("Error on control socket request: %s (%d): %s\n",
-                     confd_strerror(confd_errno), confd_errno, confd_lasterr());
+                            confd_strerror(confd_errno), confd_errno, confd_lasterr());
             }
         }
-        if (set[1].revents & POLLIN) {
-            if ((ret = confd_fd_ready(dctx, workersock)) == CONFD_EOF) {
+        if (set[1].revents & POLLIN)
+        {
+            if ((ret = confd_fd_ready(dctx, workersock)) == CONFD_EOF)
+            {
                 confd_fatal("Worker socket closed\n");
-            } else if (ret == CONFD_ERR && confd_errno != CONFD_ERR_EXTERNAL) {
+            }
+            else if (ret == CONFD_ERR && confd_errno != CONFD_ERR_EXTERNAL)
+            {
                 confd_fatal("Error on worker socket request: %s (%d): %s\n",
-                     confd_strerror(confd_errno), confd_errno, confd_lasterr());
+                            confd_strerror(confd_errno), confd_errno, confd_lasterr());
             }
         }
     }

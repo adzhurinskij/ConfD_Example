@@ -7,6 +7,12 @@ variant that offers all the northbound functionality without any need to modify
 and/or update the original YANG model or it's servicing/client applications.
 It implements a tiny bit more complex callbacks utilizing the MAAPI interface.
 
+此示例演示了ConfD转换如何提供帮助
+对现有YANG模型的另一种看法，并创造了一个转型
+提供所有北向功能而无需修改的变体
+和/或更新原始的YANG模型或它的服务/客户端应用程序。
+它利用MAAPI接口实现了一些更复杂的回调。
+
 What the Example does
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -35,6 +41,32 @@ to ConfD requests.
 The "mapping" - relationship between the northbound request (e.g. user in CLI)
 to "user-folder.yang" model, and the data stored in the "user-storage.yang"
 model, is "embedded" in the C code implementation of transformation callbacks.
+
+该示例包括YANG模型：“yangs / user-storage.yang”。这表示
+已经存在的在环境中工作的YANG模型，可以拥有
+（不包括在示例内容中）例如CDB订户实施，
+客户通过ConfD API等来阅读它的内容。这里的主要观点是
+有一些开发的管道利用这个模型。
+
+假设北向API出现了新的要求，要求
+可配置数据的不同结构。考虑新的投入，
+得到的符合要求的YANG模型设计在
+“yangs / user-folders.yang”模特。
+
+利用ConfD转换，此模型不会存储任何内容
+CDB，没有重复的数据。每当北行请求需要时
+来自“用户文件夹”模型的信息或尝试配置它，ConfD
+调用已注册的回调来处理请求，检索/修改数据
+“在后端”。在这种情况下，所有配置数据的源/目标
+是已存在于CDB中的“user-storage.yang”。
+
+名为“user-storage-trans-app”的应用程序实现了转换
+使用MAAPI事务从CDB读取并回复的回调
+到ConfD请求。
+
+“映射” - 北向请求之间的关系（例如CLI中的用户）
+到“user-folder.yang”模型，并将数据存储在“user-storage.yang”中
+模型，是“嵌入”在转换回调的C代码实现中。
 
 Example files structure
 ~~~~~~~~~~~~~~~~~~~~~~~

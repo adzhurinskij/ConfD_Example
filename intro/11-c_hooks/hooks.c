@@ -63,7 +63,7 @@ static void trace_confd_kp(const char *txt, confd_hkeypath_t *kp)
 
 static int t_init(struct confd_trans_ctx *tctx)
 {
-    DEBUG_ENTER("");
+    DEBUG_ENTER("+++ the t_init callback +++");
     int rv = CONFD_OK;
     struct trans_data *td = (struct trans_data*) tctx->t_opaque;
 
@@ -101,6 +101,9 @@ static int t_finish(struct confd_trans_ctx *tctx)
     return rv;
 }
 
+/*
+ * 当设置host的ip和mask的时候，会调用该钩子函数
+*/
 static int hook_ip_mask_set(struct confd_trans_ctx *tctx,
         confd_hkeypath_t *keypath, confd_value_t *newval)
 {
@@ -124,46 +127,52 @@ static int hook_ip_mask_set(struct confd_trans_ctx *tctx,
     confd_value_t ip, netmask;
     CONFD_SET_NOEXISTS(&ip);
     CONFD_SET_NOEXISTS(&netmask);
-    if (maapi_exists(maapisock, tctx->thandle, "%s/ip", path)) {
+
+    if (maapi_exists(maapisock, tctx->thandle, "%s/ip", path)) 
+    {
         TRACE("ip_mask: ip exits");
-        if (CONFD_OK
-                != maapi_get_elem(maapisock, tctx->thandle, &ip, "%s/ip",
-                        path)) {
+        if (CONFD_OK != maapi_get_elem(maapisock, tctx->thandle, &ip, "%s/ip", path)) 
+        {
             FATAL("Failed to get ip!");
             goto term;
         }
     }
-    if (maapi_exists(maapisock, tctx->thandle, "%s/netmask", path)) {
+
+    if (maapi_exists(maapisock, tctx->thandle, "%s/netmask", path)) 
+    {
         TRACE("ip_mask: netmask exists");
-        if (CONFD_OK
-                != maapi_get_elem(maapisock, tctx->thandle, &netmask,
-                        "%s/netmask", path)) {
+        if (CONFD_OK != maapi_get_elem(maapisock, tctx->thandle, &netmask, "%s/netmask", path)) 
+        {
             FATAL("Failed to get netmask!");
             goto term;
         }
     }
+
     trace_confd_val("ip=", &ip);
     trace_confd_val("netmask=", &netmask);
 
-    if (ip.type != C_NOEXISTS && netmask.type != C_NOEXISTS) {
-        if (!maapi_exists(maapisock, tctx->thandle, "%s/gw", path)) {
+    if (ip.type != C_NOEXISTS && netmask.type != C_NOEXISTS) 
+    {
+        // 如果gw不存在的的话，则设置相应的内容到Confd当中
+        if (!maapi_exists(maapisock, tctx->thandle, "%s/gw", path)) 
+        {
             TRACE("ip_mask: gw not set");
             struct in_addr ip_addr = CONFD_GET_IPV4(&ip);
             struct in_addr netmask_addr = CONFD_GET_IPV4(&netmask);
             struct in_addr gw_addr;
-            TRACE("ip_addr.s_addr %x netmask_addr.s_addr %x", ip_addr.s_addr,
-                    netmask_addr.s_addr);
-            gw_addr.s_addr = (ip_addr.s_addr & netmask_addr.s_addr)
-                    + 0x01000000;
+            TRACE("ip_addr.s_addr %x netmask_addr.s_addr %x", ip_addr.s_addr, netmask_addr.s_addr);
+            gw_addr.s_addr = (ip_addr.s_addr & netmask_addr.s_addr) + 0x01000000;
             confd_value_t gw;
             CONFD_SET_IPV4(&gw, gw_addr);
-            if (CONFD_OK
-                    != maapi_set_elem(maapisock, tctx->thandle, &gw, "%s/gw",
-                            path)) {
+
+            if (CONFD_OK != maapi_set_elem(maapisock, tctx->thandle, &gw, "%s/gw",  path)) 
+            {
                 FATAL("Failed to set gw!");
                 goto term;
             }
-        } else {
+        } 
+        else 
+        {
             INFO("ip_mask: gw for host %s already set.", path);
         }
     }
@@ -178,8 +187,9 @@ term:
 static int hook_ip_mask_create(struct confd_trans_ctx *tctx,
         confd_hkeypath_t *keypath)
 {
-    DEBUG_ENTER("");
+    DEBUG_ENTER("+++ create_ip_mask  +++");
     int rv = CONFD_ERR;
+
     trace_confd_kp("keypath=", keypath);
 
     WARN("ip_mask: This 'create hook' function  should not be called as create "
@@ -405,6 +415,9 @@ int main(int argc, char *argv[])
             sizeof(struct sockaddr_in)) < 0)
         confd_fatal("Failed to confd_connect() to confd \n");
 
+
+
+    // ________________________________________________通过MAAPI建立连接
     /* Establish a MAAPI socket */
     if ((maapisock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
         confd_fatal("Failed to open socket\n");
@@ -415,12 +428,19 @@ int main(int argc, char *argv[])
         confd_fatal("Failed to confd_connect() to confd\n");
     }
 
+    // ________________________________________________在事务中注册回调函数
+    // 通用事务，即启动和终止（init、finish的关系可见《Confd user guide》第七章）
     memset(&trans, 0, sizeof(trans));
     trans.init = t_init;
     trans.finish = t_finish;
     if (confd_register_trans_cb(dctx, &trans) == CONFD_ERR)
         confd_fatal("Failed to register trans cb \n");
 
+    // _______________________________________________写入过程事务的钩子函数(tailf:set-hook过程)
+    // create、remove、set_elem是set-hook过程，所以也需要在yang模型的callpoint当中加入tailf:set-hook node;
+    // create
+    // remove
+    // set_elem
     memset(&data, 0, sizeof(data));
     data.create = hook_ip_mask_create;
     data.remove = hook_ip_mask_remove;
@@ -431,8 +451,11 @@ int main(int argc, char *argv[])
         confd_fatal("Failed to register data cb \n");
 
     memset(&data, 0, sizeof(data));
+    // _______________________________________________最终写入数据库事务的钩子(tailf:transaction-hook过程)
+    // write_all
     data.write_all = hook_hosts_write_all;
     strcpy(data.callpoint, hooks__callpointid_trans_hosts);
+
     if (confd_register_data_cb(dctx, &data) == CONFD_ERR)
         confd_fatal("Failed to register data cb \n");
 
@@ -440,6 +463,7 @@ int main(int argc, char *argv[])
         confd_fatal("Failed to complete registration \n");
 
     DEBUG("Initialization complete");
+
     while (1) {
         struct pollfd set[2];
         int ret;

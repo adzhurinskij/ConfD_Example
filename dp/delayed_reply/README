@@ -30,6 +30,34 @@ error results in ConfD closing the socket to the data provider application.
 See confd.conf(5) and confd_lib_dp(3) for CONFD_DELAYED_RESPONSE and
 /confdConfig/capi/queryTimeout details.
 
+此示例显示数据提供程序何时可以返回CONFD_DELAYED_RESPONSE
+挂起回调函数并等待回复可能不方便
+从数据源开始，稍后在回复可用后显式发送回复。
+该示例还显示了confd.conf / confdConfig / capi / queryTimeout如何触发
+如果被调用的回调在该时间内没有生成回复给ConfD的回复配置。
+
+所有事务回调以及所有数据回调都可以选择
+返回值CONFD_DELAYED_RESPONSE。这意味着回调返回，
+我们通常会再次进入我们的主轮询循环。一旦答复返回它
+然后由应用程序将回复发送回ConfD。
+
+此示例仅实现数据提供程序的强制回调
+application，init（），get_elem（）和get_next（）。所有三个回调都会返回
+CONFD_DELAYED_RESPONSE，其中主轮询循环将延迟1秒
+在设置workersock文件描述符之前调用init（）时
+发送延迟回复确定，并在发送回复之前3s get_elem（）
+叫做。
+
+另外，在下面的演示中，/ confdConfig / capi / queryTimeout是
+最初配置为4秒不触发超时，然后是a
+第二次测试，其中超时设置为1秒以触发超时
+调用get_elem（）回调并在超时之前不发送回复
+到期。 queryTimeout将导致数据提供程序错误。数据提供者
+错误导致ConfD关闭套接字到数据提供程序应用程序。
+
+请参阅confd.conf（5）和confd_lib_dp（3）以获取CONFD_DELAYED_RESPONSE和
+/ confdConfig / capi / queryTimeout详细信息。
+
 Delayed Reply Demonstration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

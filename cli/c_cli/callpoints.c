@@ -42,6 +42,8 @@ static int get_elem(struct confd_trans_ctx *tctx,
      confd_value_t v;
      struct timeval now;
 
+     printf("+++callpoint?");
+
      gettimeofday(&now, NULL);
 
      switch (CONFD_GET_XMLTAG(&(keypath->v[0][0]))) {

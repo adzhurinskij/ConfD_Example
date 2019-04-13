@@ -5,8 +5,12 @@ This example demonstrates how you can define set-hook and
 transaction-hook in the data model, how the hook callback is
 implemented in C.
 
+此示例演示了如何在数据模型中定义set-hook和transaction-hook，以及如何在C中实现钩子回调。
+
 In addition, the example also illustrates how to use MAAPI C API
 in the hook callback functions.
+
+此外，该示例还说明了如何在钩子回调函数中使用MAAPI C API。
 
 
 What the Example does
@@ -22,6 +26,15 @@ What the Example does
    (prefix ::ffff:: is used).
    After that, all 'hosts_ipv6' are iterated, and those not having (ipv4)
    'hosts' counterpart are deleted.
+
+功能列表：
+
+1.定义'hosts'（ipv4）和'hosts_ipv6'的数据模型
+
+2.当host（ipv4） 的'ip'地址和'netmask'配置（未提交）时，set-hook自动预填充具有最小网络IP地址的网关（'gw'）地址（根据网络掩码）
+
+3.提交配置后，迭代（ipv4）'hosts'并创建相应的'hosts_ipv6'（如果尚未存在）。 IPv4'ip'地址和网关（'gw'）被转换为IPv6（使用前缀:: ffff ::）
+  之后，迭代所有'hosts_ipv6'，删除那些没有对应'hosts'（ipv4）的'hosts_ipv6'
 
 
 Source code
@@ -39,6 +52,13 @@ Source code
 6. 'hook_hosts_write_all' - transaction hook write_all callback;
     called during commit, creates and deletes 'hosts_ipv6' elements according
     to the 'hosts' elements
+
+1.'main'函数 - 回调的注册（事务 t_init和t_finish; 创建钩子 create，remove，set_elem; transaction hook write_all）
+2.'t_init' - 第一次调用 附加maapi socket（通过 hook 使用）
+3.'hook_ip_mask_set' -  set-hook set_elem回调函数; 计算网关地址（来自'ip'和'netmask'）并配置它（'gw'）
+4.'hook_ip_mask_remove'  -  set-hook create的回调函数; 仅在调用时记录消息
+5.'look_ip_mask_create' -  set-hook create的回调函数; 在我们的场景中没有使用，不应该调用它，显示警告
+6.'hook_hosts_write_all' - transaction hook write_all的回调函数; 在提交期间调用，根据'hosts'元素创建和删除'hosts_ipv6'元素
 
 Starting and running the Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

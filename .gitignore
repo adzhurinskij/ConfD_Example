@@ -28,13 +28,6 @@ configure
 **/build
 **/build_d
 
-# ignore cmake files
-**/cmake-build-debug
-
-# ignore visual studio generate files
-**/Debug
-**/Release
-**/x64
 
 # ignore the confD make result
 **/cli-history
@@ -46,7 +39,10 @@ confderr.log.siz
 global.data
 localhost:8008.access
 localhost:8888.access
+confd.cisco.ccl
+confd.ccl
 
 # ignore the temporary file
 Doc/~$M概要设计文档.docx
 Previous/libxconfd/test/test
+

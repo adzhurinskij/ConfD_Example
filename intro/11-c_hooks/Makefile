@@ -55,6 +55,7 @@ clean:	iclean
 start:  stop
 	$(CONFD) -c confd.conf $(CONFD_FLAGS)
 	./hooks $(START_FLAGS) &
+	@echo "start" $(START_FLAGS)
 
 ######################################################################
 stop:

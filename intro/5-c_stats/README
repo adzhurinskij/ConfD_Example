@@ -6,16 +6,26 @@ become ConfD sources of read-only data, typically statistics or
 operational information. To do this, the read-only part of the data
 provider API is used.
 
+此示例演示了如何使C应用程序成为只读数据的ConfD源，通常是统计信息或操作信息。 
+为此，使用数据提供程序API的只读部分。
+
 A NETCONF client called 'netconf-console' is used in this example.
 The 'netconf-console' is part of the ConfD installation (found in
 the 'bin' directory). This client communicates with ConfD over SSH and
 requires Python Paramiko package (on Ubuntu you can install it by command
 'apt-get install python-paramiko').
+
+在此示例中使用名为“netconf-console”的NETCONF客户端。'netconf-console'是ConfD安装的一部分（位于'bin'目录中）。
+这个客户端通过SSH与ConfD通信，需要Python Paramiko包
+（在Ubuntu上你可以通过'apt-get install python-paramiko'命令安装它）
+
 In case SSH cannot be used, there is 'netconf-console-tcp' variant. To
 use 'netconf-console-tcp', update 'confd.conf' to enable
 'netconf/transport/tcp' and change all 'netconf-console' calls
 to 'netconf-console-tcp' (in 'Makefile').
 
+
+注：功能就是将本机IP地址从电脑中读取出来，然后显示在
 
 What the Example does
 ~~~~~~~~~~~~~~~~~~~~~

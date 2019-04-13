@@ -258,6 +258,8 @@ static int set_elem(struct confd_trans_ctx *tctx,
     confd_value_t *leaf = &(keypath->v[0][0]);
     confd_value_t *kp = &(keypath->v[1][0]);
 
+    printf("set_elem");
+
     switch (CONFD_GET_XMLTAG(leaf)) {
     case users_password:
         if (maapi_set_elem(maapi_socket, tctx->thandle, newval,

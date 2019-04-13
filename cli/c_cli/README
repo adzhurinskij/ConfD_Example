@@ -6,6 +6,10 @@ clispec file, how the command is implemented in C, and how to invoke the
 command from the CLI. It also shows how a c-callback can be used
 to define a custom mode name in the cisco style CLI.
 
+此示例演示如何在clispec文件中定义CAPI cmdpoint，
+如何在C中实现命令，以及如何从CLI调用命令。 
+它还显示了如何使用c-callback在cisco样式CLI中定义自定义模式名称。
+
 What the Example does
 ~~~~~~~~~~~~~~~~~~~~~
 
