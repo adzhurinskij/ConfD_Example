@@ -40,6 +40,9 @@ objects, the tailf:snmp-name statement.
   the IP address and port of the SNMP agent, and list all the MIBs
   that should be loaded at startup.
 
+  SNMP代理是confd守护程序的一部分，可以从confd.conf文件启用。 
+  默认情况下，SNMP代理被禁用。 配置SNMP代理的IP地址和端口，列出启动时应加载的所有MIB。
+
   [confd.conf]
 
   <snmpAgent>
@@ -101,7 +104,7 @@ objects, the tailf:snmp-name statement.
 6. Accessing the data from an SNMP Manager
 
   Use any SNMP manager and connect it to the ConfD SNMP Agent.
-  The example below uses NetSNMP as a manager.
+  The example below uses NetSNMP as a manager.s
 
 6a. SNMP Walk
 

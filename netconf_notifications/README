@@ -3,9 +3,14 @@ Example: Implementing NETCONF Notification Streams
 
 This example shows how to implement NETCONF Notification streams.
 
+此示例显示如何实现NETCONF的 Notification 流。
+
 Two applications (notifier_builtin_replay_store.c and notifier.c) are
 provided which implements either a a notification stream with built-in
 replay support or with externally implemented replay support.
+
+提供了两个应用程序（notifier_builtin_replay_store.c 和 notifier.c）
+它们实现了具有内置重放支持的通知流或外部实现的重放支持。
 
 notifier.c keeps its replay log in memory for simplicity.  A real
 external replay store implementation would keep the replay log on disk.
