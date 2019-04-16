@@ -27,10 +27,14 @@ $(CONFD_DIR)/src/confd/build/include.mk:
 	@echo 'Where is ConfD installed? Set $$CONFD_DIR to point it out!'
 	@echo ''
 
+CONFD_SNMP_FXS_DIR = $(CONFD_DIR)/etc/confd/snmp
+
 ######################################################################
 # Example specific definitions and rules
 
-CONFD_FLAGS = --addloadpath $(CONFD_DIR)/etc/confd
+CONFD_FLAGS = --addloadpath $(CONFD_DIR)/etc/confd       \
+				--addloadpath $(CONFD_SNMP_FXS_DIR)
+	
 START_FLAGS ?=
 
 SRC	= dhcpd_conf.c
@@ -39,7 +43,8 @@ OBJS	= $(SRC:.c=.o)
 all: c-all
 	@echo "Build complete"
 
-common-all: dhcpd.fxs commands-j.ccl commands-c.ccl $(CDB_DIR) ssh-keydir
+common-all: dhcpd.fxs commands-j.ccl commands-c.ccl $(CDB_DIR) ssh-keydir \
+            $(CDB_DIR)/vacm_init.xml
 
 c-all: common-all dhcpd_conf
 	@echo "C build complete"
@@ -47,6 +52,10 @@ c-all: common-all dhcpd_conf
 dhcpd_conf.o: dhcpd.h
 dhcpd_conf: $(OBJS)
 	$(CC) -o $@ $(OBJS) $(LIBS)
+
+$(CDB_DIR)/vacm_init.xml: $(CDB_DIR)
+	-mkdir -p $(CDB_DIR)
+	cp *_init.xml $(CDB_DIR)
 
 
 ######################################################################
@@ -58,7 +67,7 @@ clean:	iclean
 start:  stop start_confd start_subscriber
 
 start_confd:
-	$(CONFD) -c confd.conf $(CONFD_FLAGS)
+	$(CONFD) -c ./confd.conf $(CONFD_FLAGS)
 
 start_subscriber:
 	### * In one terminal window, run: tail -f ./confd.log
