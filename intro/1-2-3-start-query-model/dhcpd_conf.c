@@ -70,7 +70,6 @@ static void do_subnet(int rsock, FILE *fp)
        fprintf(fp, " option routers %s\n", buf);
    }
 
-
    confd_value_t vv;
    cdb_get(rsock, &vv,  "maxLeaseTime");
 
