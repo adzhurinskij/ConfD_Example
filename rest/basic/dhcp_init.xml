@@ -1,6 +1,6 @@
 <dhcp xmlns="http://yang-central.org/ns/example/dhcp">
   <max-lease-time>7200</max-lease-time>
-  <default-lease-time>600</default-lease-time>
+  <default-lease-time>3</default-lease-time>
 
   <subnet>
     <net>10.254.239.0/27</net>

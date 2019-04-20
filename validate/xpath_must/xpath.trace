@@ -1,0 +1,213 @@
+20-Apr-2019::19:27:40.303 evaluating: /sys/ifc[name='eth0']/weight: sum(/sys/ifc[enabled = 'true']/weight) < 1000
+20-Apr-2019::19:27:40.313 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.314 get_elem(/sys/ifc[name='eth0']/enabled) = true
+20-Apr-2019::19:27:40.314 get_elem(/sys/ifc[name='eth0']/weight) = 500
+20-Apr-2019::19:27:40.314 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.314 get_elem(/sys/ifc[name='eth1']/enabled) = false
+20-Apr-2019::19:27:40.314 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.314 get_elem(/sys/ifc[name='eth2']/enabled) = false
+20-Apr-2019::19:27:40.314 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.315 get_elem(/sys/ifc[name='eth3']/enabled) = true
+20-Apr-2019::19:27:40.315 get_elem(/sys/ifc[name='eth3']/weight) = 100
+20-Apr-2019::19:27:40.315 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.315 result: /sys/ifc[name='eth0']/weight: true
+20-Apr-2019::19:27:40.315 evaluating: /sys/ifc[name='eth0']/labels[string='main']/string: count(/sys/ifc/labels[string = current()]) = 1
+20-Apr-2019::19:27:40.315 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.316 exists(/sys/ifc[name='eth0']/labels[string='main']) = true
+20-Apr-2019::19:27:40.316 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.316 exists(/sys/ifc[name='eth1']/labels[string='main']) = false
+20-Apr-2019::19:27:40.316 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.316 exists(/sys/ifc[name='eth2']/labels[string='main']) = false
+20-Apr-2019::19:27:40.317 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.317 exists(/sys/ifc[name='eth3']/labels[string='main']) = false
+20-Apr-2019::19:27:40.318 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.318 result: /sys/ifc[name='eth0']/labels[string='main']/string: true
+20-Apr-2019::19:27:40.318 evaluating: /sys/ifc[name='eth0']/labels[string='main']/string: not(/sys:sys/sys:ifc[name = current()])
+20-Apr-2019::19:27:40.318 exists(/sys/ifc[name='main']) = false
+20-Apr-2019::19:27:40.318 result: /sys/ifc[name='eth0']/labels[string='main']/string: true
+20-Apr-2019::19:27:40.319 evaluating: /sys/ifc[name='eth0']/labels[string='wan-interface']/string: count(/sys/ifc/labels[string = current()]) = 1
+20-Apr-2019::19:27:40.319 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.319 exists(/sys/ifc[name='eth0']/labels[string='wan-interface']) = true
+20-Apr-2019::19:27:40.319 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.320 exists(/sys/ifc[name='eth1']/labels[string='wan-interface']) = false
+20-Apr-2019::19:27:40.320 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.320 exists(/sys/ifc[name='eth2']/labels[string='wan-interface']) = false
+20-Apr-2019::19:27:40.320 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.320 exists(/sys/ifc[name='eth3']/labels[string='wan-interface']) = false
+20-Apr-2019::19:27:40.320 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.320 result: /sys/ifc[name='eth0']/labels[string='wan-interface']/string: true
+20-Apr-2019::19:27:40.321 evaluating: /sys/ifc[name='eth0']/labels[string='wan-interface']/string: not(/sys:sys/sys:ifc[name = current()])
+20-Apr-2019::19:27:40.321 exists(/sys/ifc[name='wan-interface']) = false
+20-Apr-2019::19:27:40.321 result: /sys/ifc[name='eth0']/labels[string='wan-interface']/string: true
+20-Apr-2019::19:27:40.321 evaluating: /sys/ifc[name='eth0']/ipv4addr: count(/sys/ifc/ipv4addr[. = current()]) = 1
+20-Apr-2019::19:27:40.321 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.322 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.322 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.322 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.322 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.322 get_elem(/sys/ifc[name='eth1']/ipv4addr) = 10.2.2.2
+20-Apr-2019::19:27:40.322 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.323 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.323 get_elem(/sys/ifc[name='eth2']/ipv4addr) = not_found
+20-Apr-2019::19:27:40.323 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.323 get_elem(/sys/ifc[name='eth3']/ipv4addr) = 10.10.10.1
+20-Apr-2019::19:27:40.323 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.323 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.323 result: /sys/ifc[name='eth0']/ipv4addr: true
+20-Apr-2019::19:27:40.324 evaluating: /sys/ifc[name='eth0']/ipv4addr: count(/sys/ifc/ipv4addr[. = current()]) = 1
+20-Apr-2019::19:27:40.324 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.324 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.324 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.324 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.324 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.325 get_elem(/sys/ifc[name='eth1']/ipv4addr) = 10.2.2.2
+20-Apr-2019::19:27:40.325 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.325 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.325 get_elem(/sys/ifc[name='eth2']/ipv4addr) = not_found
+20-Apr-2019::19:27:40.325 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.325 get_elem(/sys/ifc[name='eth3']/ipv4addr) = 10.10.10.1
+20-Apr-2019::19:27:40.326 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.326 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.326 result: /sys/ifc[name='eth0']/ipv4addr: true
+20-Apr-2019::19:27:40.326 evaluating: /sys/ifc[name='eth1']/weight: sum(/sys/ifc[enabled = 'true']/weight) < 1000
+20-Apr-2019::19:27:40.326 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.326 get_elem(/sys/ifc[name='eth0']/enabled) = true
+20-Apr-2019::19:27:40.327 get_elem(/sys/ifc[name='eth0']/weight) = 500
+20-Apr-2019::19:27:40.327 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.327 get_elem(/sys/ifc[name='eth1']/enabled) = false
+20-Apr-2019::19:27:40.327 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.327 get_elem(/sys/ifc[name='eth2']/enabled) = false
+20-Apr-2019::19:27:40.328 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.328 get_elem(/sys/ifc[name='eth3']/enabled) = true
+20-Apr-2019::19:27:40.328 get_elem(/sys/ifc[name='eth3']/weight) = 100
+20-Apr-2019::19:27:40.328 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.328 result: /sys/ifc[name='eth1']/weight: true
+20-Apr-2019::19:27:40.329 evaluating: /sys/ifc[name='eth1']/labels[string='backup']/string: count(/sys/ifc/labels[string = current()]) = 1
+20-Apr-2019::19:27:40.329 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.329 exists(/sys/ifc[name='eth0']/labels[string='backup']) = false
+20-Apr-2019::19:27:40.329 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.329 exists(/sys/ifc[name='eth1']/labels[string='backup']) = true
+20-Apr-2019::19:27:40.330 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.330 exists(/sys/ifc[name='eth2']/labels[string='backup']) = false
+20-Apr-2019::19:27:40.330 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.330 exists(/sys/ifc[name='eth3']/labels[string='backup']) = false
+20-Apr-2019::19:27:40.330 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.330 result: /sys/ifc[name='eth1']/labels[string='backup']/string: true
+20-Apr-2019::19:27:40.331 evaluating: /sys/ifc[name='eth1']/labels[string='backup']/string: not(/sys:sys/sys:ifc[name = current()])
+20-Apr-2019::19:27:40.331 exists(/sys/ifc[name='backup']) = false
+20-Apr-2019::19:27:40.331 result: /sys/ifc[name='eth1']/labels[string='backup']/string: true
+20-Apr-2019::19:27:40.331 evaluating: /sys/ifc[name='eth1']/labels[string='wan-interface2']/string: count(/sys/ifc/labels[string = current()]) = 1
+20-Apr-2019::19:27:40.331 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.331 exists(/sys/ifc[name='eth0']/labels[string='wan-interface2']) = false
+20-Apr-2019::19:27:40.332 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.332 exists(/sys/ifc[name='eth1']/labels[string='wan-interface2']) = true
+20-Apr-2019::19:27:40.332 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.332 exists(/sys/ifc[name='eth2']/labels[string='wan-interface2']) = false
+20-Apr-2019::19:27:40.332 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.333 exists(/sys/ifc[name='eth3']/labels[string='wan-interface2']) = false
+20-Apr-2019::19:27:40.333 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.333 result: /sys/ifc[name='eth1']/labels[string='wan-interface2']/string: true
+20-Apr-2019::19:27:40.333 evaluating: /sys/ifc[name='eth1']/labels[string='wan-interface2']/string: not(/sys:sys/sys:ifc[name = current()])
+20-Apr-2019::19:27:40.333 exists(/sys/ifc[name='wan-interface2']) = false
+20-Apr-2019::19:27:40.333 result: /sys/ifc[name='eth1']/labels[string='wan-interface2']/string: true
+20-Apr-2019::19:27:40.334 evaluating: /sys/ifc[name='eth1']/ipv4addr: count(/sys/ifc/ipv4addr[. = current()]) = 1
+20-Apr-2019::19:27:40.334 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.334 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.334 get_elem(/sys/ifc[name='eth1']/ipv4addr) = 10.2.2.2
+20-Apr-2019::19:27:40.335 get_elem(/sys/ifc[name='eth1']/ipv4addr) = 10.2.2.2
+20-Apr-2019::19:27:40.335 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.335 get_elem(/sys/ifc[name='eth1']/ipv4addr) = 10.2.2.2
+20-Apr-2019::19:27:40.335 get_elem(/sys/ifc[name='eth1']/ipv4addr) = 10.2.2.2
+20-Apr-2019::19:27:40.335 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.335 get_elem(/sys/ifc[name='eth2']/ipv4addr) = not_found
+20-Apr-2019::19:27:40.335 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.335 get_elem(/sys/ifc[name='eth3']/ipv4addr) = 10.10.10.1
+20-Apr-2019::19:27:40.336 get_elem(/sys/ifc[name='eth1']/ipv4addr) = 10.2.2.2
+20-Apr-2019::19:27:40.336 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.336 result: /sys/ifc[name='eth1']/ipv4addr: true
+20-Apr-2019::19:27:40.336 evaluating: /sys/ifc[name='eth2']/weight: sum(/sys/ifc[enabled = 'true']/weight) < 1000
+20-Apr-2019::19:27:40.336 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.336 get_elem(/sys/ifc[name='eth0']/enabled) = true
+20-Apr-2019::19:27:40.336 get_elem(/sys/ifc[name='eth0']/weight) = 500
+20-Apr-2019::19:27:40.337 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.337 get_elem(/sys/ifc[name='eth1']/enabled) = false
+20-Apr-2019::19:27:40.337 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.337 get_elem(/sys/ifc[name='eth2']/enabled) = false
+20-Apr-2019::19:27:40.337 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.337 get_elem(/sys/ifc[name='eth3']/enabled) = true
+20-Apr-2019::19:27:40.337 get_elem(/sys/ifc[name='eth3']/weight) = 100
+20-Apr-2019::19:27:40.338 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.338 result: /sys/ifc[name='eth2']/weight: true
+20-Apr-2019::19:27:40.338 evaluating: /sys/ifc[name='eth2']/labels[string='lan1']/string: count(/sys/ifc/labels[string = current()]) = 1
+20-Apr-2019::19:27:40.338 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.338 exists(/sys/ifc[name='eth0']/labels[string='lan1']) = false
+20-Apr-2019::19:27:40.338 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.339 exists(/sys/ifc[name='eth1']/labels[string='lan1']) = false
+20-Apr-2019::19:27:40.339 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.339 exists(/sys/ifc[name='eth2']/labels[string='lan1']) = true
+20-Apr-2019::19:27:40.339 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.339 exists(/sys/ifc[name='eth3']/labels[string='lan1']) = false
+20-Apr-2019::19:27:40.339 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.339 result: /sys/ifc[name='eth2']/labels[string='lan1']/string: true
+20-Apr-2019::19:27:40.340 evaluating: /sys/ifc[name='eth2']/labels[string='lan1']/string: not(/sys:sys/sys:ifc[name = current()])
+20-Apr-2019::19:27:40.340 exists(/sys/ifc[name='lan1']) = false
+20-Apr-2019::19:27:40.340 result: /sys/ifc[name='eth2']/labels[string='lan1']/string: true
+20-Apr-2019::19:27:40.340 evaluating: /sys/ifc[name='eth3']/weight: sum(/sys/ifc[enabled = 'true']/weight) < 1000
+20-Apr-2019::19:27:40.340 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.341 get_elem(/sys/ifc[name='eth0']/enabled) = true
+20-Apr-2019::19:27:40.341 get_elem(/sys/ifc[name='eth0']/weight) = 500
+20-Apr-2019::19:27:40.341 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.341 get_elem(/sys/ifc[name='eth1']/enabled) = false
+20-Apr-2019::19:27:40.341 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.341 get_elem(/sys/ifc[name='eth2']/enabled) = false
+20-Apr-2019::19:27:40.341 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.341 get_elem(/sys/ifc[name='eth3']/enabled) = true
+20-Apr-2019::19:27:40.342 get_elem(/sys/ifc[name='eth3']/weight) = 100
+20-Apr-2019::19:27:40.342 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.342 result: /sys/ifc[name='eth3']/weight: true
+20-Apr-2019::19:27:40.342 evaluating: /sys/ifc[name='eth3']/labels[string='lan2']/string: count(/sys/ifc/labels[string = current()]) = 1
+20-Apr-2019::19:27:40.342 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.342 exists(/sys/ifc[name='eth0']/labels[string='lan2']) = false
+20-Apr-2019::19:27:40.343 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.343 exists(/sys/ifc[name='eth1']/labels[string='lan2']) = false
+20-Apr-2019::19:27:40.343 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.343 exists(/sys/ifc[name='eth2']/labels[string='lan2']) = false
+20-Apr-2019::19:27:40.343 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.344 exists(/sys/ifc[name='eth3']/labels[string='lan2']) = true
+20-Apr-2019::19:27:40.344 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.344 result: /sys/ifc[name='eth3']/labels[string='lan2']/string: true
+20-Apr-2019::19:27:40.344 evaluating: /sys/ifc[name='eth3']/labels[string='lan2']/string: not(/sys:sys/sys:ifc[name = current()])
+20-Apr-2019::19:27:40.344 exists(/sys/ifc[name='lan2']) = false
+20-Apr-2019::19:27:40.344 result: /sys/ifc[name='eth3']/labels[string='lan2']/string: true
+20-Apr-2019::19:27:40.345 evaluating: /sys/ifc[name='eth3']/ipv4addr: count(/sys/ifc/ipv4addr[. = current()]) = 1
+20-Apr-2019::19:27:40.345 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:27:40.345 get_elem(/sys/ifc[name='eth0']/ipv4addr) = 192.168.99.1 192.168.99.2
+20-Apr-2019::19:27:40.345 get_elem(/sys/ifc[name='eth3']/ipv4addr) = 10.10.10.1
+20-Apr-2019::19:27:40.345 get_elem(/sys/ifc[name='eth3']/ipv4addr) = 10.10.10.1
+20-Apr-2019::19:27:40.345 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:27:40.346 get_elem(/sys/ifc[name='eth1']/ipv4addr) = 10.2.2.2
+20-Apr-2019::19:27:40.346 get_elem(/sys/ifc[name='eth3']/ipv4addr) = 10.10.10.1
+20-Apr-2019::19:27:40.346 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:27:40.346 get_elem(/sys/ifc[name='eth2']/ipv4addr) = not_found
+20-Apr-2019::19:27:40.346 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:27:40.346 get_elem(/sys/ifc[name='eth3']/ipv4addr) = 10.10.10.1
+20-Apr-2019::19:27:40.347 get_elem(/sys/ifc[name='eth3']/ipv4addr) = 10.10.10.1
+20-Apr-2019::19:27:40.347 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:27:40.347 result: /sys/ifc[name='eth3']/ipv4addr: true
+20-Apr-2019::19:27:40.356 evaluating: /sys/numbers/odd: (. mod 2) = 1
+20-Apr-2019::19:27:40.356 get_elem(/sys/numbers/odd) = 1
+20-Apr-2019::19:27:40.356 result: /sys/numbers/odd: true
+20-Apr-2019::19:31:17.545 evaluating: /sys/ifc[name='eth0']/labels[string='eth3']/string: count(/sys/ifc/labels[string = current()]) = 1
+20-Apr-2019::19:31:17.547 get_next(/sys/ifc) = {eth0}
+20-Apr-2019::19:31:17.548 exists(/sys/ifc[name='eth0']/labels[string='eth3']) = true
+20-Apr-2019::19:31:17.548 get_next(/sys/ifc[name='eth0']) = {eth1}
+20-Apr-2019::19:31:17.548 exists(/sys/ifc[name='eth1']/labels[string='eth3']) = false
+20-Apr-2019::19:31:17.548 get_next(/sys/ifc[name='eth1']) = {eth2}
+20-Apr-2019::19:31:17.549 exists(/sys/ifc[name='eth2']/labels[string='eth3']) = false
+20-Apr-2019::19:31:17.549 get_next(/sys/ifc[name='eth2']) = {eth3}
+20-Apr-2019::19:31:17.549 exists(/sys/ifc[name='eth3']/labels[string='eth3']) = false
+20-Apr-2019::19:31:17.549 get_next(/sys/ifc[name='eth3']) = false
+20-Apr-2019::19:31:17.549 result: /sys/ifc[name='eth0']/labels[string='eth3']/string: true
+20-Apr-2019::19:31:17.550 evaluating: /sys/ifc[name='eth0']/labels[string='eth3']/string: not(/sys:sys/sys:ifc[name = current()])
+20-Apr-2019::19:31:17.550 exists(/sys/ifc[name='eth3']) = true
+20-Apr-2019::19:31:17.550 result: /sys/ifc[name='eth0']/labels[string='eth3']/string: false
