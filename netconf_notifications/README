@@ -15,6 +15,8 @@ replay support or with externally implemented replay support.
 notifier.c keeps its replay log in memory for simplicity.  A real
 external replay store implementation would keep the replay log on disk.
 
+为了简单起见，notifier.c将重放日志保存在内存中。 真正的外部重放存储实现会将重播日志保留在磁盘上。
+
 The notifications are specified in notif.yang.
 
 In confd.conf, the stream 'interface' is defined, and the NETCONF
