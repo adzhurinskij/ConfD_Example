@@ -124,7 +124,9 @@ static void send_notification(confd_tag_value_t *vals, int nvals)
     struct notif *notif;
 
     getdatetime(&now);
+
     notif = &replay_buffer[next_replay_idx];
+
     if (notif->vals) {
         /* we're aging out this notification */
         replay_has_aged_out = 1;
@@ -132,12 +134,14 @@ static void send_notification(confd_tag_value_t *vals, int nvals)
         first_replay_idx = (first_replay_idx + 1) % MAX_BUFFERED_NOTIFS;
         free(notif->vals);
     }
+    
     notif->eventTime = now;
     sz = nvals * sizeof(confd_tag_value_t);
     notif->vals = malloc(sz);
     memcpy(notif->vals, vals, sz);
     notif->nvals = nvals;
     next_replay_idx = (next_replay_idx + 1) % MAX_BUFFERED_NOTIFS;
+
     OK(confd_notification_send(live_ctx,
                                &notif->eventTime,
                                notif->vals,

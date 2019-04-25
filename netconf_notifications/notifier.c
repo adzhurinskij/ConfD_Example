@@ -138,10 +138,12 @@ static void send_notification(confd_tag_value_t *vals, int nvals)
     memcpy(notif->vals, vals, sz);
     notif->nvals = nvals;
     next_replay_idx = (next_replay_idx + 1) % MAX_BUFFERED_NOTIFS;
+
     OK(confd_notification_send(live_ctx,
                                &notif->eventTime,
                                notif->vals,
                                notif->nvals));
+                               
 }
 
 static void send_notifup_1(int index, int flags1, int flags2)
