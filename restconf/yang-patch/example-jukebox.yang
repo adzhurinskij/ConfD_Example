@@ -179,6 +179,7 @@ module example-jukebox {
           "Number of songs in the library.";
       }
     }  // end library
+    
     list playlist {
       key name;
       description
@@ -215,6 +216,7 @@ module example-jukebox {
         }
       }
     }
+
     container player {
       description
         "Represents the jukebox player resource.";
